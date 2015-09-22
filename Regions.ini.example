@@ -1,0 +1,35 @@
+; * This is an example region config file.
+; * 
+; * If OpenSimulator is started up without any regions, it will ask you configuration questions to generate a Regions.ini file for you.
+; * So there is no need to change this file directly, it is only for reference.
+; * However, if you prefer you can also copy this file to Regions.ini and appropriately change the parameters below.
+; * Only files ending with .ini and .xml in this directly will be loaded by OpenSimulator.
+; *
+; * You can multiple regions into one file or make one file per region
+; * The section name is the region name
+; *
+
+[Arriba2 Testing]
+RegionUUID = "ac8cbe96-a124-4845-9feb-44f7a07981fc"
+Location = "11000,11000"
+InternalAddress = "0.0.0.0"
+InternalPort = 9200
+RegionType = "Mainland"
+Owner = "b41713a0-ae88-4fcb-a3ca-1b5d96c804d3;http://freakytech.spdns.de:8002/;Sim Dev"
+
+; *
+; * Multi-Tenancy. Only set if needed
+; *
+
+; ScopeID = "00000000-0000-0000-0000-000000000000"
+
+; *
+; * Product name (used in search from viewer 1.23
+; *
+
+; RegionType = "Mainland"
+
+; *
+; * UUID of texture to use as a maptile for this region.
+; * Only set if you have disabled dynamic generation of the map tile from the region contents.
+; MaptileStaticUUID = "00000000-0000-0000-0000-000000000000"
