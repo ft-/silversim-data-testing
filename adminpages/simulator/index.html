@@ -1,0 +1,182 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<title>SilverSim Admin</title>
+	<!-- application stylesheet will go here -->
+	<!-- dynamically apply native visual theme according to the browser user agent -->
+	<script src="/admin/js/dojox/mobile/deviceTheme.js"></script>
+	<!-- dojo configuration options -->
+	<script>
+		dojoConfig = {
+			async: true,
+			parseOnLoad: false
+		};
+	</script>
+	<script src="/admin/js/dojo/dojo.js"></script>
+	<script src="/admin/js/cryptojs/sha1.js"></script>
+	<script>
+		var sessionid = "";
+		require([
+			"dojox/mobile/parser",
+			"dojox/mobile/compat",
+			"dojox/mobile",
+			"dojox/mobile/compat",
+			"dojo/domReady!",
+			"dojox/mobile/View",
+			"dojox/mobile/Button",
+			"dojox/mobile/Heading",
+			"dojox/mobile/RoundRectList",
+			"dojox/mobile/ListItem",
+			"dojox/mobile/TransitionEvent",
+			"dojox/mobile/TextBox",
+			"dojox/mobile/Switch"
+		], function (parser) {
+			// now parse the page for widgets
+			parser.parse();
+		});
+		function generateResponse(challenge, password)
+		{
+			return CryptoJS.SHA1(challenge + "+" + CryptoJS.SHA1(password)).toString();
+		}
+		
+		function processLogin(e)
+		{
+			var username = user.value;
+			var password = pass.value;
+			require(["dojo/request","dojox/mobile/TransitionEvent","dojo/json"],
+				function(request, TransitionEvent)
+				{
+					request("/admin/json", 
+					{
+						method:"POST",
+						data: JSON.stringify(
+						{ 
+							"method":"challenge",
+							"user":username
+						}),
+						headers:
+						{
+							"Content-Type":"application/json"
+						},
+						handleAs:"json"
+					}).then(
+						function(challenge_data) 
+						{
+							if(!challenge_data.success)
+							{
+								alert("Login not possible. Code: "+ challenge_data.reason);
+								return;
+							}
+							
+							response = generateResponse(challenge_data.challenge, password);
+							pass.value = "";
+							user.value = "";
+							sessionid = challenge_data.sessionid;
+							
+							request("/admin/json",
+							{
+								method:"POST",
+								data: JSON.stringify(
+								{
+									"method":"login",
+									"user":username,
+									"response":response,
+									"sessionid":challenge_data.sessionid
+								}),
+								headers:
+								{
+									"Content-Type":"application/json"
+								},
+								handleAs:"json"
+							}).then(
+								function(login_data) 
+								{
+									if(!login_data.success)
+									{
+										alert("Login failed: reason " + login_data.reason);
+										return;
+									}
+									new TransitionEvent(viewlogin, {
+										moveTo: "#viewmain",
+										transition: "slide",
+										transitionDir: 1
+									}).dispatch();
+								},
+								function(err)
+								{
+								}
+							);
+						},
+						function(err) {
+						}
+					);
+				}
+			);
+		}
+		
+		function processLogout(e)
+		{
+			require(["dojo/request","dojox/mobile/TransitionEvent","dojo/json"],
+				function(request, TransitionEvent)
+				{
+					request("/admin/json", 
+					{
+						method:"POST",
+						data: JSON.stringify(
+						{ 
+							"method":"logout",
+							"sessionid":sessionid
+						}),
+						headers:
+						{
+							"Content-Type":"application/json"
+						},
+						handleAs:"json"
+					}).then(
+						function(logout_data) 
+						{
+							if(!logout_data.success)
+							{
+								alert("Logout not possible. Code: "+ logout_data.reason);
+							}
+							new TransitionEvent(viewmain, {
+								moveTo: "#viewlogin",
+								transition: "slide",
+								transitionDir: -1
+							}).dispatch();
+						},
+						function(err) {
+						}
+					);
+				}
+			);
+		}
+	</script>
+</head>
+<body style="visibility:hidden;">
+	<div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
+		<h1 data-dojo-type="dojox/mobile/Heading">Login</h1>
+		<ul data-dojo-type="dojox/mobile/RoundRectList">
+		<li data-dojo-type="dojox/mobile/ListItem">Username
+		<input data-dojo-type="dojox/mobile/TextBox" id="user" placeHolder="Username"/></li>
+		<li data-dojo-type="dojox/mobile/ListItem">Password
+		<input type="password" data-dojo-type="dojox/mobile/TextBox" id="pass" placeHolder="Password"/></li>
+		<li data-dojo-type="dojox/mobile/ListItem"><button data-dojo-type="dojox/mobile/Button" data-dojo-props="onClick:function(e){processLogin(e)}">Login</button></li>
+		</ul>
+	</div>
+	<div id="viewmain" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Admin'">
+		<div id="viewmain_logout" data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ processLogout(e); }, arrow: 'left', label: 'Logout'" style="float:left"></div>
+				</h1>
+		<ul data-dojo-type="dojox/mobile/RoundRectList">
+		<li data-dojo-type="dojox/mobile/ListItem">Hello World</li>
+		</ul>
+	</div>
+	<div id="viewregioncontrol" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading">Region Control</h1>
+	</div>
+</body>
+</html>
