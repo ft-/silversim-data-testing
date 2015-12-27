@@ -33,6 +33,7 @@
 			"dojox/mobile/TextBox",
 			"dojox/mobile/Slider",
 			"dojox/mobile/Switch",
+			"dojox/mobile/Pane",
 		], function (parser) {
 			// now parse the page for widgets
 			parser.parse();
@@ -117,7 +118,7 @@
 									{
 										childWidget = new dojox.mobile.ListItem({
 											clickable:true,
-											label:"Region Control"});
+											label:"Region Start/Stop Control"});
 										list.addChild(childWidget);
 										childWidget.on("click", switchToRegionControl);
 									}
@@ -130,6 +131,19 @@
 										list.addChild(childWidget);
 										childWidget.on("click", switchToLoginControl);
 									}
+									
+									/*
+									if(containsAdminAll || array.indexOf(login_data.rights, "console.access")>=0)
+									{
+										//not yet working
+										childWidget = new dojox.mobile.ListItem({
+											clickable:true,
+											label:"Sim Console",
+											moveTo:"viewconsole",
+											transition:"slide"});
+										list.addChild(childWidget);
+									}
+									*/
 									
 									new TransitionEvent(viewlogin, {
 										moveTo: "#viewmain",
@@ -317,7 +331,7 @@
 		}
 	</script>
 	<div id="viewregioncontrol" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Region Control</h1>
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Region Start/Stop Control</h1>
 		<ul id="list_regioncontrol" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
 	</div>
@@ -440,6 +454,42 @@
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Login Control</h1>
 		<ul id="list_logincontrol" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
+	</div>
+	<div id="viewconsole" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Sim Console</h1>
+		<script>
+		function send_command()
+		{
+			require(["dojo/request", "dijit/registry"], function(request, registry)
+			{
+				var command = registry.byId("command_input").value;
+				request("/admin/json", 
+				{
+					method:"POST",
+					data: JSON.stringify(
+					{ 
+						"command":command,
+						"method":"console.command",
+						"sessionid":sessionid
+					}),
+					headers:
+					{
+						"Content-Type":"application/json"
+					},
+				}).then(
+					function(response) 
+					{
+						registry.byId("command_output").set('innerHTML', command + "\n" +response);
+					},
+					function(err) {
+					}
+				);
+			});
+		}
+		</script>
+		<input id="command_input" data-dojo-type="dojox/mobile/TextBox" style="width: 90%;"/>
+		<button id="command_send" data-dojo-type="dojox/mobile/Button" onClick="send_command()">Send</button>
+		<div id="command_output" data-dojo-type="dojox/mobile/Pane" style="width: 90%; height: 20em;">Empty</div>
 	</div>
 </body>
 </html>
