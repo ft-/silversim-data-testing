@@ -48,8 +48,8 @@
 		{
 			var username = user.value;
 			var password = pass.value;
-			require(["dojo/request","dojox/mobile/TransitionEvent","dojo/json"],
-				function(request, TransitionEvent)
+			require(["dojo/request","dojox/mobile/TransitionEvent","dijit/registry", "dojo/_base/array", "dojo/json"],
+				function(request, TransitionEvent, registry, array)
 				{
 					request("/admin/json", 
 					{
@@ -101,6 +101,36 @@
 										alert("Login failed: reason " + login_data.reason);
 										return;
 									}
+									
+									list = registry.byId("list_mainview");
+									array.forEach(list.getChildren(),
+									function(child)
+									{
+										list.removeChild(child);
+										child.destroy();
+									});
+									
+									var containsAdminAll = array.indexOf(login_data.rights, "admin.all") >= 0;
+									var childWidget;
+									
+									if(containsAdminAll || array.indexOf(login_data.rights, "regions.control")>=0)
+									{
+										childWidget = new dojox.mobile.ListItem({
+											clickable:true,
+											label:"Region Control"});
+										list.addChild(childWidget);
+										childWidget.on("click", switchToRegionControl);
+									}
+									
+									if(containsAdminAll || array.indexOf(login_data.rights, "regions.logincontrol")>=0)
+									{
+										childWidget = new dojox.mobile.ListItem({
+											clickable:true,
+											label:"Login Control"});
+										list.addChild(childWidget);
+										childWidget.on("click", switchToLoginControl);
+									}
+									
 									new TransitionEvent(viewlogin, {
 										moveTo: "#viewmain",
 										transition: "slide",
@@ -174,9 +204,7 @@
 		<div id="viewmain_logout" data-dojo-type="dojox/mobile/ToolBarButton" 
 						data-dojo-props="onClick: function(e){ processLogout(e); }, arrow: 'left', label: 'Logout'" style="float:left"></div>
 				</h1>
-		<ul data-dojo-type="dojox/mobile/RoundRectList">
-		<li data-dojo-type="dojox/mobile/ListItem" clickable="true" onClick="switchToRegionControl()">Region Control</li>
-		<li data-dojo-type="dojox/mobile/ListItem" clickable="true" onClick="switchToLoginControl()">Login Control</li>
+		<ul id="list_mainview" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
 	</div>
 	<script>
