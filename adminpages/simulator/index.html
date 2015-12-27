@@ -22,7 +22,7 @@
 			"dojox/mobile/parser",
 			"dojox/mobile/compat",
 			"dojox/mobile",
-			"dojox/mobile/compat",
+			"dijit/registry",
 			"dojo/domReady!",
 			"dojox/mobile/View",
 			"dojox/mobile/Button",
@@ -31,11 +31,14 @@
 			"dojox/mobile/ListItem",
 			"dojox/mobile/TransitionEvent",
 			"dojox/mobile/TextBox",
-			"dojox/mobile/Switch"
+			"dojox/mobile/Slider",
+			"dojox/mobile/Switch",
 		], function (parser) {
 			// now parse the page for widgets
 			parser.parse();
 		});
+		
+
 		function generateResponse(challenge, password)
 		{
 			return CryptoJS.SHA1(challenge + "+" + CryptoJS.SHA1(password)).toString();
@@ -172,11 +175,243 @@
 						data-dojo-props="onClick: function(e){ processLogout(e); }, arrow: 'left', label: 'Logout'" style="float:left"></div>
 				</h1>
 		<ul data-dojo-type="dojox/mobile/RoundRectList">
-		<li data-dojo-type="dojox/mobile/ListItem">Hello World</li>
+		<li data-dojo-type="dojox/mobile/ListItem" clickable="true" onClick="switchToRegionControl()">Region Control</li>
+		<li data-dojo-type="dojox/mobile/ListItem" clickable="true" onClick="switchToLoginControl()">Login Control</li>
 		</ul>
 	</div>
+	<script>
+		function startStopRegion(regionid, value)
+		{
+			var method = value == "on" ? "region.start" : "region.stop";
+			
+			require(["dojo/request"], function(request)
+			{
+				request("/admin/json", {
+					method:"POST",
+					data: JSON.stringify(
+					{
+						"method":method,
+						"id":regionid,
+						"sessionid":sessionid
+					}),
+					headers:
+					{
+						"Content-Type":"application/json"
+					},
+					handleAs:"json"
+				}).then(
+					function(regions_data) 
+					{
+						if(!regions_data.success)
+						{
+							if(regions_data.reason == 1)
+							{
+								new TransitionEvent(viewmain, {
+									moveTo: "#viewlogin",
+									transition: "slide",
+									transitionDir: -1
+								}).dispatch();
+							}
+							else
+							{
+								alert("Failed "+regions_data.reason);
+							}
+							return;
+						}
+					},
+					function(err) {
+					}
+				);
+			});
+		}
+		
+		function switchToRegionControl()
+		{
+			require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+				function(array, request, registry, TransitionEvent)
+			{
+				list = registry.byId("list_regioncontrol");
+				array.forEach(list.getChildren(),
+				function(child)
+				{
+					list.removeChild(child);
+					child.destroy();
+				});
+				request("/admin/json", 
+				{
+					method:"POST",
+					data: JSON.stringify(
+					{ 
+						"method":"regions.list",
+						"sessionid":sessionid
+					}),
+					headers:
+					{
+						"Content-Type":"application/json"
+					},
+					handleAs:"json"
+				}).then(
+					function(regions_data) 
+					{
+						if(!regions_data.success)
+						{
+							new TransitionEvent(viewmain, {
+								moveTo: "#viewlogin",
+								transition: "slide",
+								transitionDir: -1
+							}).dispatch();
+							return;
+						}
+						
+						array.forEach(regions_data.regions, function(region)
+						{
+							var childWidget = new dojox.mobile.ListItem({
+								id:"startstop_"+region.ID, 
+								label:region.Name});
+							list.addChild(childWidget);
+							var val = region.IsOnline ? "on" : "off";
+							var sw = new dojox.mobile.Switch({
+								value:val});
+							childWidget.addChild(sw);
+							sw.on("stateChanged", function(val) { startStopRegion(region.ID, val);});
+						});
+						
+						new TransitionEvent(viewmain, {
+							moveTo: "#viewregioncontrol",
+							transition: "slide",
+							transitionDir: 1
+						}).dispatch();
+					},
+					function(err) {
+					}
+				);
+			});
+		}
+	</script>
 	<div id="viewregioncontrol" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading">Region Control</h1>
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Region Control</h1>
+		<ul id="list_regioncontrol" data-dojo-type="dojox/mobile/RoundRectList">
+		</ul>
+	</div>
+	<script>
+		function enableDisableLogins(regionid, value)
+		{
+			var method = value == "on" ? "region.login.enable" : "region.login.disable";
+			
+			require(["dojo/request"], function(request)
+			{
+				request("/admin/json", {
+					method:"POST",
+					data: JSON.stringify(
+					{
+						"method":method,
+						"id":regionid,
+						"sessionid":sessionid
+					}),
+					headers:
+					{
+						"Content-Type":"application/json"
+					},
+					handleAs:"json"
+				}).then(
+					function(regions_data) 
+					{
+						if(!regions_data.success)
+						{
+							if(regions_data.reason == 1)
+							{
+								new TransitionEvent(viewmain, {
+									moveTo: "#viewlogin",
+									transition: "slide",
+									transitionDir: -1
+								}).dispatch();
+							}
+							else
+							{
+								alert("Failed "+regions_data.reason);
+							}
+							return;
+						}
+					},
+					function(err) {
+					}
+				);
+			});
+		}
+
+		function switchToLoginControl()
+		{
+			require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+				function(array, request, registry, TransitionEvent)
+			{
+				list = registry.byId("list_logincontrol");
+				array.forEach(list.getChildren(),
+				function(child)
+				{
+					list.removeChild(child);
+					child.destroy();
+				});
+				request("/admin/json", 
+				{
+					method:"POST",
+					data: JSON.stringify(
+					{ 
+						"method":"regions.list",
+						"sessionid":sessionid
+					}),
+					headers:
+					{
+						"Content-Type":"application/json"
+					},
+					handleAs:"json"
+				}).then(
+					function(regions_data) 
+					{
+						if(!regions_data.success)
+						{
+							if(regions_data.reason == 1)
+							{
+								new TransitionEvent(viewmain, {
+									moveTo: "#viewlogin",
+									transition: "slide",
+									transitionDir: -1
+								}).dispatch();
+							}
+							return;
+						}
+						
+						array.forEach(regions_data.regions, function(region)
+						{
+							if(region.IsOnline)
+							{
+								var childWidget = new dojox.mobile.ListItem({
+									id:"login_"+region.ID, 
+									label:region.Name});
+								list.addChild(childWidget);
+								var val = region.IsLoginsEnabled ? "on" : "off";
+								var sw = new dojox.mobile.Switch({
+									value:val});
+								childWidget.addChild(sw);
+								sw.on("stateChanged", function(val) {enableDisableLogins(region.ID, val);});
+							}
+						});
+						
+						new TransitionEvent(viewmain, {
+							moveTo: "#viewlogincontrol",
+							transition: "slide",
+							transitionDir: 1
+						}).dispatch();
+					},
+					function(err) {
+					}
+				);
+			});
+		}
+	</script>
+	<div id="viewlogincontrol" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Login Control</h1>
+		<ul id="list_logincontrol" data-dojo-type="dojox/mobile/RoundRectList">
+		</ul>
 	</div>
 </body>
 </html>
