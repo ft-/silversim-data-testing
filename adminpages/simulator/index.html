@@ -141,10 +141,8 @@
 										childWidget.on("click", switchToLoginControl);
 									}
 									
-									/*
 									if(containsAdminAll || array.indexOf(login_data.rights, "console.access")>=0)
 									{
-										//not yet working
 										childWidget = new dojox.mobile.ListItem({
 											clickable:true,
 											label:"Sim Console",
@@ -152,7 +150,6 @@
 											transition:"slide"});
 										list.addChild(childWidget);
 									}
-									*/
 									
 									new TransitionEvent(viewlogin, {
 										moveTo: "#viewmain",
@@ -585,7 +582,8 @@
 		{
 			require(["dojo/request", "dijit/registry"], function(request, registry)
 			{
-				var command = registry.byId("command_input").value;
+				var command = registry.byId("command_input").get('value');
+
 				request("/admin/json", 
 				{
 					method:"POST",
@@ -602,7 +600,7 @@
 				}).then(
 					function(response) 
 					{
-						registry.byId("command_output").set('innerHTML', command + "\n" +response);
+						registry.byId("command_output").set('innerHTML', "<pre>"+response+"</pre>");
 					},
 					function(err) {
 					}
@@ -610,9 +608,10 @@
 			});
 		}
 		</script>
-		<input id="command_input" data-dojo-type="dojox/mobile/TextBox" style="width: 90%;"/>
+		<input id="command_input" data-dojo-type="dojox/mobile/TextBox" size="80"/>
 		<button id="command_send" data-dojo-type="dojox/mobile/Button" onClick="send_command()">Send</button>
-		<div id="command_output" data-dojo-type="dojox/mobile/Pane" style="width: 90%; height: 20em;">Empty</div>
+		<br/>
+		<div id="command_output" data-dojo-type="dojox/mobile/Pane" style="background-color: black; color: lightgray;"></div>
 	</div>
 </body>
 </html>
