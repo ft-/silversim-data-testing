@@ -107,8 +107,8 @@ function sendEstateNotice()
 						}).dispatch();
 					}
 					return;
+					alert("Error: " + data.reason);
 				}
-				alert("Error: " + data.reason);
 			},
 			function(err) {
 			}
