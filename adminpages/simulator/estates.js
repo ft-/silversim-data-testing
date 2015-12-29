@@ -336,6 +336,16 @@ function switchToEstateDetails(estateid)
 				var haveNoRegionAvail = true;
 				var view = registry.byId("view_estatedetails");
 				
+				if(detailsList)
+				{
+					array.forEach(detailsList.getChildren(),
+					function(child)
+					{
+						detailsList.removeChild(child);
+						child.destroy();
+					});
+				}
+				
 				array.forEach(data.regions, function(region)
 				{
 					haveNoRegionAvail = false;
