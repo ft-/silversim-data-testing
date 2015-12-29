@@ -199,7 +199,8 @@ function processLogin(e)
 							
 							if( containsAdminAll ||
 								(array.indexOf(login_data.rights, "issues.view")>=0 && login_data.numissues != 0) ||
-								array.indexOf(login_data.rights, "regions.notice")>=0)
+								array.indexOf(login_data.rights, "regions.notice")>=0 ||
+								array.indexOf(login_data.rights, "modules.view")>=0)
 							{
 								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Simulator"}));
 								var list = new dojox.mobile.RoundRectList();
@@ -218,6 +219,15 @@ function processLogin(e)
 										list.addChild(childWidget);
 										childWidget.on("click", switchToConfigurationIssues);
 									}
+								}
+								
+								if(containsAdminAll || array.indexOf(login_data.rights, "modules.view")>=0)
+								{
+										childWidget = new dojox.mobile.ListItem({
+											clickable:true,
+											label:"Configured Modules"});
+										list.addChild(childWidget);
+										childWidget.on("click", switchToModulesList);
 								}
 								
 								if(containsAdminAll || array.indexOf(login_data.rights, "regions.notice")>=0)

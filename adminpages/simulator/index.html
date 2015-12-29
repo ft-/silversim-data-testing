@@ -16,6 +16,7 @@
 	<script src="/admin/regionenable.js"></script>
 	<script src="/admin/regionstartstop.js"></script>
 	<script src="/admin/console.js"></script>
+	<script src="/admin/modules.js"></script>
 </head>
 <body style="visibility:hidden;">
 	<div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
@@ -128,6 +129,30 @@
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Login Enable</h1>
 		<div data-dojo-type="dojox/mobile/ScrollableView">
 			<ul id="list_logincontrol" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+	
+	<!------------------------------------------------------------------------->
+	<div id="viewmodules" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Module List</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_modules" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+	
+	<!------------------------------------------------------------------------->
+	<div id="viewmodule" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmodules', transition:'slide', transitionDir:'-1'">Module Details</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Details</h2>
+			<ul data-dojo-type="dojox/mobile/RoundRectList">
+				<li id="moduledetails_name" data-dojo-type="dojox/mobile/ListItem">Name</li>
+				<li id="moduledetails_desc" data-dojo-type="dojox/mobile/ListItem">Description</li>
+			</ul>
+			<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Features</h2>
+			<ul id="list_modulefeatures" data-dojo-type="dojox/mobile/RoundRectList">
 			</ul>
 		</div>
 	</div>
