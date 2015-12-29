@@ -114,6 +114,15 @@
 									var containsAdminAll = array.indexOf(login_data.rights, "admin.all") >= 0;
 									var childWidget;
 									
+									if(containsAdminAll || array.indexOf(login_data.rights, "estates.view")>=0)
+									{
+										childWidget = new dojox.mobile.ListItem({
+											clickable:true,
+											label:"Estates"});
+										list.addChild(childWidget);
+										childWidget.on("click", switchToEstatesList);
+									}
+									
 									if(containsAdminAll || array.indexOf(login_data.rights, "regions.control")>=0)
 									{
 										childWidget = new dojox.mobile.ListItem({
@@ -152,7 +161,7 @@
 									}
 									
 									new TransitionEvent(viewlogin, {
-										moveTo: "#viewmain",
+										moveTo: "viewmain",
 										transition: "slide",
 										transitionDir: 1
 									}).dispatch();
@@ -195,7 +204,7 @@
 								alert("Logout not possible. Code: "+ logout_data.reason);
 							}
 							new TransitionEvent(viewmain, {
-								moveTo: "#viewlogin",
+								moveTo: "viewlogin",
 								transition: "slide",
 								transitionDir: -1
 							}).dispatch();
@@ -219,6 +228,8 @@
 		<li data-dojo-type="dojox/mobile/ListItem"><button data-dojo-type="dojox/mobile/Button" data-dojo-props="onClick:function(e){processLogin(e)}">Login</button></li>
 		</ul>
 	</div>
+	
+	<!------------------------------------------------------------------------->
 	<div id="viewmain" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Admin'">
 		<div id="viewmain_logout" data-dojo-type="dojox/mobile/ToolBarButton" 
@@ -227,6 +238,8 @@
 		<ul id="list_mainview" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
 	</div>
+
+	<!------------------------------------------------------------------------->
 	<script>
 		function startStopRegion(regionid, value)
 		{
@@ -255,7 +268,7 @@
 							if(regions_data.reason == 1)
 							{
 								new TransitionEvent(viewmain, {
-									moveTo: "#viewlogin",
+									moveTo: "viewlogin",
 									transition: "slide",
 									transitionDir: -1
 								}).dispatch();
@@ -304,7 +317,7 @@
 						if(!regions_data.success)
 						{
 							new TransitionEvent(viewmain, {
-								moveTo: "#viewlogin",
+								moveTo: "viewlogin",
 								transition: "slide",
 								transitionDir: -1
 							}).dispatch();
@@ -325,7 +338,7 @@
 						});
 						
 						new TransitionEvent(viewmain, {
-							moveTo: "#viewregioncontrol",
+							moveTo: "viewregioncontrol",
 							transition: "slide",
 							transitionDir: 1
 						}).dispatch();
@@ -341,6 +354,8 @@
 		<ul id="list_regioncontrol" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
 	</div>
+	
+	<!------------------------------------------------------------------------->
 	<script>
 		function enableDisableRegion(regionid, value)
 		{
@@ -369,7 +384,7 @@
 							if(regions_data.reason == 1)
 							{
 								new TransitionEvent(viewmain, {
-									moveTo: "#viewlogin",
+									moveTo: "viewlogin",
 									transition: "slide",
 									transitionDir: -1
 								}).dispatch();
@@ -418,7 +433,7 @@
 						if(!regions_data.success)
 						{
 							new TransitionEvent(viewmain, {
-								moveTo: "#viewlogin",
+								moveTo: "viewlogin",
 								transition: "slide",
 								transitionDir: -1
 							}).dispatch();
@@ -439,7 +454,7 @@
 						});
 						
 						new TransitionEvent(viewmain, {
-							moveTo: "#viewregionenable",
+							moveTo: "viewregionenable",
 							transition: "slide",
 							transitionDir: 1
 						}).dispatch();
@@ -455,6 +470,78 @@
 		<ul id="list_regionenable" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
 	</div>
+	
+	<!------------------------------------------------------------------------->
+
+	<script>
+		function switchToEstatesList()
+		{
+			require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+				function(array, request, registry, TransitionEvent)
+			{
+				list = registry.byId("list_estates");
+				array.forEach(list.getChildren(),
+				function(child)
+				{
+					list.removeChild(child);
+					child.destroy();
+				});
+				request("/admin/json", 
+				{
+					method:"POST",
+					data: JSON.stringify(
+					{ 
+						"method":"estates.list",
+						"sessionid":sessionid
+					}),
+					headers:
+					{
+						"Content-Type":"application/json"
+					},
+					handleAs:"json"
+				}).then(
+					function(data) 
+					{
+						if(!data.success)
+						{
+							if(data.reason == 1)
+							{
+								new TransitionEvent(viewmain, {
+									moveTo: "viewlogin",
+									transition: "slide",
+									transitionDir: -1
+								}).dispatch();
+							}
+							return;
+						}
+						
+						array.forEach(data.estates, function(estate)
+						{
+							var childWidget = new dojox.mobile.ListItem({
+								id:"estate_"+estate.ID, 
+								label:estate.Name});
+							list.addChild(childWidget);
+						});
+						
+						new TransitionEvent(viewmain, {
+							moveTo: "viewestateslist",
+							transition: "slide",
+							transitionDir: 1
+						}).dispatch();
+					},
+					function(err) {
+					}
+				);
+			});
+		}
+	</script>
+	<div id="viewestateslist" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Estates</h1>
+		<ul id="list_estates" data-dojo-type="dojox/mobile/RoundRectList">
+		</ul>
+	</div>
+
+	<!------------------------------------------------------------------------->
 	<script>
 		function enableDisableLogins(regionid, value)
 		{
@@ -483,7 +570,7 @@
 							if(regions_data.reason == 1)
 							{
 								new TransitionEvent(viewmain, {
-									moveTo: "#viewlogin",
+									moveTo: "viewlogin",
 									transition: "slide",
 									transitionDir: -1
 								}).dispatch();
@@ -534,7 +621,7 @@
 							if(regions_data.reason == 1)
 							{
 								new TransitionEvent(viewmain, {
-									moveTo: "#viewlogin",
+									moveTo: "viewlogin",
 									transition: "slide",
 									transitionDir: -1
 								}).dispatch();
@@ -559,7 +646,7 @@
 						});
 						
 						new TransitionEvent(viewmain, {
-							moveTo: "#viewlogincontrol",
+							moveTo: "viewlogincontrol",
 							transition: "slide",
 							transitionDir: 1
 						}).dispatch();
@@ -575,6 +662,8 @@
 		<ul id="list_logincontrol" data-dojo-type="dojox/mobile/RoundRectList">
 		</ul>
 	</div>
+	
+	<!------------------------------------------------------------------------->
 	<div id="viewconsole" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Sim Console</h1>
 		<script>
