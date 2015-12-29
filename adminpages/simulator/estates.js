@@ -74,9 +74,9 @@ function switchToEstatesList(transitionDirection)
 var selectedEstateID;
 
 /******************************************************************************/
-function estateSendNotice()
+function sendEstateNotice()
 {
-	require(["dojo/registry", "dojo/request"], function(registry, request)
+	require(["dijit/registry", "dojo/request"], function(registry, request)
 	{
 		request("/admin/json", 
 		{
@@ -143,7 +143,7 @@ function initEstateDetails()
 			formWidget.addChild(listItem);
 			listItem.addChild(childWidget);
 			childWidget = new dojox.mobile.Button({label:"Send"});
-			childWidget.on("click", function() { sendEstateNotice(); });
+			childWidget.on("click", sendEstateNotice);
 			listItem.addChild(childWidget);
 			view.addChild(formWidget);
 		}
