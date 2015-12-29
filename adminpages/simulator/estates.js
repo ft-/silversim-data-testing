@@ -57,6 +57,20 @@ function switchToEstatesList(transitionDirection)
 						childWidget.on("click", function() { switchToEstateDetails(estate.ID);});
 					}
 				});
+
+				if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
+				{
+					if(!registry.byId('estate_add'))
+					{
+						var tbWidget = new dojox.mobile.ToolBarButton({icon:'mblDomButtonWhitePlus', style:'float:right'});
+						registry.byId('estates_header').addChild(tbWidget);
+					}
+				}
+				else
+				{
+					var tbWidget = registry.byId('estate_add');
+					tbWidget.getEnclosingWidget().removeChild(tbWidget);
+				}
 				
 				new TransitionEvent(viewmain, {
 					moveTo: "viewestateslist",
@@ -105,8 +119,8 @@ function sendEstateNotice()
 							transition: "slide",
 							transitionDir: -1
 						}).dispatch();
+						return;
 					}
-					return;
 					alert("Error: " + data.reason);
 				}
 			},
@@ -159,7 +173,6 @@ function initEstateDetails()
 		
 		if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 		{
-			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_name"});
 			listItem = new dojox.mobile.ListItem({label:"Name"});
 			formWidget.addChild(listItem);
@@ -194,6 +207,7 @@ function initEstateDetails()
 			listItem.set('rightText', '');
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
+			childWidget.on("click", function() { updateEstateData(); });
 			
 		}
 		else
@@ -210,6 +224,58 @@ function initEstateDetails()
 			listItem = new dojox.mobile.ListItem({id:"estatedetail_abuseemail",label:"Abuse Email"});
 			formWidget.addChild(listItem);
 		}
+		
+	});
+}
+
+/******************************************************************************/
+function updateEstateData()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		var estateName = registry.byId("estatedetail_name").get('value');
+		var pricePerMeter = parseInt(registry.byId("estatedetail_pricepermeter").get('value'));
+		var billableFactor = parseFloat(registry.byId("estatedetail_billablefactor").get('value'));
+		var abuseEmail = registry.byId("estatedetail_abuseemail").get('value');
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"estate.update",
+				"id":selectedEstateID,
+				"name":estateName,
+				"pricepermeter":pricePerMeter,
+				"billablefactor":billableFactor,
+				"abuseemail":abuseEmail,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewestatedetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					return;
+				}
+
+				registry.byId("estatedetail_nameinfo").set('label', "Estate " + estateName);
+			},
+			function(err) {
+			}
+		);
 	});
 }
 
@@ -250,6 +316,7 @@ function switchToEstateDetails(estateid)
 					return;
 				}
 
+				registry.byId("estatedetail_nameinfo").set('label', "Estate " + data.estate.Name);
 				if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 				{
 					registry.byId("estatedetail_name").set('value',data.estate.Name);
@@ -264,7 +331,28 @@ function switchToEstateDetails(estateid)
 					registry.byId("estatedetail_billablefactor").set('rightText',data.estate.BillableFactor);
 					registry.byId("estatedetail_abuseemail").set('rightText',data.estate.AbuseEmail);
 				}
+
+				var detailsList = registry.byId('estatedetails_regionmap');
+				var haveNoRegionAvail = true;
+				var view = registry.byId("view_estatedetails");
 				
+				array.forEach(data.regions, function(region)
+				{
+					haveNoRegionAvail = false;
+					if(!detailsList)
+					{
+						view.addChild(new dojox.mobile.RoundRectCategory({label:"Connected Regions"}));
+						detailsList = new dojox.mobile.RoundRectList({id:'estatedetails_regionmap'});
+						view.addChild(detailsList);
+					}
+					detailsList.addChild(new dojox.mobile.ListItem({'label':region.Name}));
+				});
+
+				if(detailsList && haveNoRegionAvail)
+				{
+					view.removeChild(detailsList);
+					detailsList.destroy();
+				}
 				
 				new TransitionEvent(viewmain, {
 					moveTo: "viewestatedetails",

@@ -38,6 +38,48 @@ function generateResponse(challenge, password)
 }
 
 /******************************************************************************/
+function sendRegionsNotice()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"regions.notice",
+				"message":registry.byId('regions_notice').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewmain, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+						return;
+					}
+					alert("Error: " + data.reason);
+				}
+			},
+			function(err) {
+			}
+		);
+	});
+}
+
+/******************************************************************************/
 function processLogin(e)
 {
 	require(["dojo/request","dojox/mobile/TransitionEvent","dijit/registry", "dojo/_base/array", "dojo/json"],
@@ -109,23 +151,44 @@ function processLogin(e)
 							var childWidget;
 							var sectionWidget;
 							
-							if(containsAdminAll || array.indexOf(login_data.rights, "issues.view")>=0)
+							if( containsAdminAll ||
+								(array.indexOf(login_data.rights, "issues.view")>=0 && login_data.numissues != 0) ||
+								array.indexOf(login_data.rights, "regions.notice")>=0)
 							{
-								if(login_data.numissues != 0)
+								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Simulator"}));
+								var list = new dojox.mobile.RoundRectList();
+								mainview.addChild(list);
+							
+								if(containsAdminAll || array.indexOf(login_data.rights, "issues.view")>=0)
 								{
-									mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Configuration Issues"}));
-									var list = new dojox.mobile.RoundRectList();
-									mainview.addChild(list);
-									
-									var numIssues = login_data.numissues != 0 ? login_data.numissues : "None";
-									childWidget = new dojox.mobile.ListItem({
-										clickable:true,
-										rightText:numIssues,
-										label:"View"});
-									list.addChild(childWidget);
-									childWidget.on("click", switchToConfigurationIssues);
+									if(login_data.numissues != 0)
+									{
+										
+										var numIssues = login_data.numissues != 0 ? login_data.numissues : "None";
+										childWidget = new dojox.mobile.ListItem({
+											clickable:true,
+											rightText:numIssues,
+											label:"Configuration Issues"});
+										list.addChild(childWidget);
+										childWidget.on("click", switchToConfigurationIssues);
+									}
+								}
+								
+								if(containsAdminAll || array.indexOf(login_data.rights, "regions.notice")>=0)
+								{
+									var listItem;
+									childWidget = new dojox.mobile.TextBox({id: "regions_notice", placeHolder: "Enter notice here"});
+									listItem = new dojox.mobile.ListItem();
+									list.addChild(listItem);
+									listItem.addChild(childWidget);
+									childWidget = new dojox.mobile.Button({label:"Send Notice"});
+									listItem.set('rightText','');
+									childWidget.placeAt(listItem.rightTextNode);
+									childWidget.startup();
+									childWidget.on("click", sendRegionsNotice);
 								}
 							}
+							
 							
 							if(containsAdminAll || array.indexOf(login_data.rights, "estates.view")>=0)
 							{
@@ -184,7 +247,7 @@ function processLogin(e)
 								
 								childWidget = new dojox.mobile.ListItem({
 									clickable:true,
-									label:"Switch To",
+									label:">>",
 									moveTo:"viewconsole",
 									transition:"slide"});
 								list.addChild(childWidget);
