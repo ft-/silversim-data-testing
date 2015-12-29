@@ -109,20 +109,21 @@ function processLogin(e)
 							var childWidget;
 							var sectionWidget;
 							
-							if(containsAdminAll || array.indexOf(login_data.rights, "securityissues.view")>=0)
+							if(containsAdminAll || array.indexOf(login_data.rights, "issues.view")>=0)
 							{
-								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Security Issues"}));
-								var list = new dojox.mobile.RoundRectList();
-								mainview.addChild(list);
-								if(login_data.numsecurityissues != 0)
+								if(login_data.numissues != 0)
 								{
-									var numSecIssues = login_data.numsecurityissues != 0 ? login_data.numsecurityissues : "None";
+									mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Configuration Issues"}));
+									var list = new dojox.mobile.RoundRectList();
+									mainview.addChild(list);
+									
+									var numIssues = login_data.numissues != 0 ? login_data.numissues : "None";
 									childWidget = new dojox.mobile.ListItem({
 										clickable:true,
-										rightText:numSecIssues,
-										label:"Security Issues"});
+										rightText:numIssues,
+										label:"Configuration Issues"});
 									list.addChild(childWidget);
-									childWidget.on("click", switchToSecurityIssues);
+									childWidget.on("click", switchToConfigurationIssues);
 								}
 							}
 							
@@ -249,12 +250,12 @@ function processLogout(e)
 }
 
 /******************************************************************************/
-function switchToSecurityIssues()
+function switchToConfigurationIssues()
 {
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
-		list = registry.byId("list_securityissues");
+		list = registry.byId("list_issues");
 		array.forEach(list.getChildren(),
 		function(child)
 		{
@@ -266,7 +267,7 @@ function switchToSecurityIssues()
 			method:"POST",
 			data: JSON.stringify(
 			{ 
-				"method":"securityissues.get",
+				"method":"issues.get",
 				"sessionid":sessionid
 			}),
 			headers:
@@ -281,7 +282,7 @@ function switchToSecurityIssues()
 				{
 					if(data.reason == 1)
 					{
-						new TransitionEvent(viewsecurityissues, {
+						new TransitionEvent(viewissues, {
 							moveTo: "viewlogin",
 							transition: "slide",
 							transitionDir: -1
@@ -291,7 +292,7 @@ function switchToSecurityIssues()
 				}
 				
 				var addedOne = false;
-				array.forEach(data.securityissues, function(issue)
+				array.forEach(data.issues, function(issue)
 				{
 					var childWidget = new dojox.mobile.ListItem({
 						label:issue});
@@ -307,7 +308,7 @@ function switchToSecurityIssues()
 				}
 				
 				new TransitionEvent(viewmain, {
-					moveTo: "viewsecurityissues",
+					moveTo: "viewissues",
 					transition: "slide",
 					transitionDir: 1
 				}).dispatch();

@@ -71,6 +71,53 @@ function switchToEstatesList(transitionDirection)
 }
 
 /******************************************************************************/
+var selectedEstateID;
+
+/******************************************************************************/
+function estateSendNotice()
+{
+	require(["dojo/registry", "dojo/request"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"estate.notice",
+				"id":selectedEstateID,
+				"message":registry.byId('estatedetail_regionnotice').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewestateslist, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					return;
+				}
+				alert("Error: " + data.reason);
+			},
+			function(err) {
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+
 function initEstateDetails()
 {
 	require(["dojo/_base/array", "dijit/registry"], function(array, registry)
@@ -88,10 +135,17 @@ function initEstateDetails()
 		{
 			childWidget = new dojox.mobile.RoundRectCategory({label:"Send Notice"});
 			view.addChild(childWidget);
+			var formWidget;
+			var listItem;
+			formWidget = new dojox.mobile.RoundRectList();
 			childWidget = new dojox.mobile.TextBox({id: "estatedetail_regionnotice", placeHolder: "Enter notice here"});
-			view.addChild(childWidget);
+			listItem = new dojox.mobile.ListItem();
+			formWidget.addChild(listItem);
+			listItem.addChild(childWidget);
 			childWidget = new dojox.mobile.Button({label:"Send"});
-			view.addChild(childWidget);
+			childWidget.on("click", function() { sendEstateNotice(); });
+			listItem.addChild(childWidget);
+			view.addChild(formWidget);
 		}
 
 		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
@@ -101,28 +155,28 @@ function initEstateDetails()
 		var listItem;
 		view.addChild(formWidget);
 		
-		if(containsAdminAll || array.indexOf(rights, "estate.manage")>=0)
+		if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 		{
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_name"});
 			listItem = new dojox.mobile.ListItem({label:"Name"});
-			listItem.addChild(childWidget);
 			formWidget.addChild(listItem);
+			listItem.addChild(childWidget);
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_pricepermeter"});
 			listItem = new dojox.mobile.ListItem({label:"Price Per Meter"});
-			listItem.addChild(childWidget);
 			formWidget.addChild(listItem);
+			listItem.addChild(childWidget);
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_billablefactor"});
 			listItem = new dojox.mobile.ListItem({label:"Billable Factor"});
-			listItem.addChild(childWidget);
 			formWidget.addChild(listItem);
+			listItem.addChild(childWidget);
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_abuseemail"});
 			listItem = new dojox.mobile.ListItem({label:"Abuse Email"});
-			listItem.addChild(childWidget);
 			formWidget.addChild(listItem);
+			listItem.addChild(childWidget);
 		}
 		else
 		{
@@ -144,6 +198,7 @@ function initEstateDetails()
 /******************************************************************************/
 function switchToEstateDetails(estateid)
 {
+	selectedEstateID = estateid;
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
@@ -175,6 +230,21 @@ function switchToEstateDetails(estateid)
 						}).dispatch();
 					}
 					return;
+				}
+
+				if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
+				{
+					registry.byId("estatedetail_name").set('value',data.estate.Name);
+					registry.byId("estatedetail_pricepermeter").set('value',data.estate.PricePerMeter);
+					registry.byId("estatedetail_billablefactor").set('value',data.estate.BillableFactor);
+					registry.byId("estatedetail_abuseemail").set('value',data.estate.AbuseEmail);
+				}
+				else
+				{
+					registry.byId("estatedetail_name").set('rightText',data.estate.Name);
+					registry.byId("estatedetail_pricepermeter").set('rightText',data.estate.PricePerMeter);
+					registry.byId("estatedetail_billablefactor").set('rightText',data.estate.BillableFactor);
+					registry.byId("estatedetail_abuseemail").set('rightText',data.estate.AbuseEmail);
 				}
 				
 				
