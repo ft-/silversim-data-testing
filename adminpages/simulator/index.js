@@ -121,7 +121,7 @@ function processLogin(e)
 									childWidget = new dojox.mobile.ListItem({
 										clickable:true,
 										rightText:numIssues,
-										label:"Configuration Issues"});
+										label:"View"});
 									list.addChild(childWidget);
 									childWidget.on("click", switchToConfigurationIssues);
 								}

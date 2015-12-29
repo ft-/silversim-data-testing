@@ -35,29 +35,35 @@
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
 						data-dojo-props="onClick: function(e){ processLogout(e); }, arrow: 'left', label: 'Logout'" style="float:left"></div>
 				</h1>
-		<div id="view_main" data-dojo-type="dojox/mobile/View">
+		<div id="view_main" data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
 	</div>
 
 	<!------------------------------------------------------------------------->
 	<div id="viewregioncontrol" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Region Start/Stop</h1>
-		<ul id="list_regioncontrol" data-dojo-type="dojox/mobile/RoundRectList">
-		</ul>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_regioncontrol" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
 	</div>
 	
 	<!------------------------------------------------------------------------->
 	<div id="viewregionenable" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Region Auto-Start</h1>
-		<ul id="list_regionenable" data-dojo-type="dojox/mobile/RoundRectList">
-		</ul>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_regionenable" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
 	</div>
 	
 	<!------------------------------------------------------------------------->
 	<div id="viewestateslist" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Estates</h1>
-		<ul id="list_estates" data-dojo-type="dojox/mobile/RoundRectList">
-		</ul>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_estates" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
 	</div>
 
 	<!------------------------------------------------------------------------->
@@ -66,31 +72,37 @@
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
 						data-dojo-props="onClick: function(e){ switchToEstatesList(-1); }, arrow: 'left', label: 'Back'" style="float:left"></div>
 				</h1>
-		<div id="view_estatedetails" data-dojo-type="dojox/mobile/View">
+		<div id="view_estatedetails" data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
 	</div>
 
 	<!------------------------------------------------------------------------->
 	<div id="viewissues" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Configuration Issues</h1>
-		<ul id="list_issues" data-dojo-type="dojox/mobile/RoundRectList">
-		</ul>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_issues" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
 	</div>
 
 	<!------------------------------------------------------------------------->
 	<div id="viewlogincontrol" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Login Enable</h1>
-		<ul id="list_logincontrol" data-dojo-type="dojox/mobile/RoundRectList">
-		</ul>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_logincontrol" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
 	</div>
 	
 	<!------------------------------------------------------------------------->
 	<div id="viewconsole" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Sim Console</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
 		<input id="command_input" data-dojo-type="dojox/mobile/TextBox" size="80"/>
 		<button id="command_send" data-dojo-type="dojox/mobile/Button" onClick="send_command()">Send</button>
 		<br/>
 		<div id="command_output" data-dojo-type="dojox/mobile/Pane" style="background-color: black; color: lightgray;"></div>
+		</div>
 	</div>
 </body>
 </html>

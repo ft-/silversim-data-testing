@@ -143,9 +143,11 @@ function initEstateDetails()
 			formWidget.addChild(listItem);
 			listItem.addChild(childWidget);
 			childWidget = new dojox.mobile.Button({label:"Send"});
-			childWidget.on("click", sendEstateNotice);
-			listItem.addChild(childWidget);
 			view.addChild(formWidget);
+			listItem.set('rightText','');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			childWidget.on("click", sendEstateNotice);
 		}
 
 		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
@@ -161,22 +163,38 @@ function initEstateDetails()
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_name"});
 			listItem = new dojox.mobile.ListItem({label:"Name"});
 			formWidget.addChild(listItem);
-			listItem.addChild(childWidget);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_pricepermeter"});
 			listItem = new dojox.mobile.ListItem({label:"Price Per Meter"});
 			formWidget.addChild(listItem);
-			listItem.addChild(childWidget);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_billablefactor"});
 			listItem = new dojox.mobile.ListItem({label:"Billable Factor"});
 			formWidget.addChild(listItem);
-			listItem.addChild(childWidget);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
 			
 			childWidget = new dojox.mobile.TextBox({id:"estatedetail_abuseemail"});
 			listItem = new dojox.mobile.ListItem({label:"Abuse Email"});
 			formWidget.addChild(listItem);
-			listItem.addChild(childWidget);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			
+			childWidget = new dojox.mobile.Button({label:'Update'});
+			listItem = new dojox.mobile.ListItem({});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			
 		}
 		else
 		{
