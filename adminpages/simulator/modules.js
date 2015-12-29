@@ -5,12 +5,7 @@ function switchToModulesList()
 		function(array, request, registry, TransitionEvent)
 	{
 		list = registry.byId("list_modules");
-		array.forEach(list.getChildren(),
-		function(child)
-		{
-			list.removeChild(child);
-			child.destroy();
-		});
+		list.destroyDescendants();
 		request("/admin/json", 
 		{
 			method:"POST",
@@ -112,12 +107,7 @@ function switchToModuleDetails(moduleid)
 				registry.byId("moduledetails_desc").set('rightText',data.Description);
 
 				var detailsList = registry.byId('list_modulefeatures');
-				array.forEach(detailsList.getChildren(),
-				function(child)
-				{
-					detailsList.removeChild(child);
-					child.destroy();
-				});
+				detailsList.destroyDescendants();
 				
 				var haveAnyFeatures = false;
 				array.forEach(data.Features, function(feature)

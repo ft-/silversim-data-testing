@@ -88,13 +88,14 @@ function sendRegionsNotice()
 {
 	require(["dijit/registry", "dojo/request"], function(registry, request)
 	{
+		registry.byId('simulatornoticedialog').hide();
 		request("/admin/json", 
 		{
 			method:"POST",
 			data: JSON.stringify(
 			{ 
 				"method":"regions.notice",
-				"message":registry.byId('regions_notice').get('value'),
+				"message":registry.byId('regions_notice_text').get('value'),
 				"sessionid":sessionid
 			}),
 			headers:
@@ -185,12 +186,7 @@ function processLogin(e)
 							}
 							
 							var mainview = registry.byId("view_main");
-							array.forEach(mainview.getChildren(),
-							function(child)
-							{
-								mainview.removeChild(child);
-								child.destroy();
-							});
+							mainview.destroyDescendants();
 							
 							rights = login_data.rights;
 							containsAdminAll = array.indexOf(login_data.rights, "admin.all") >= 0;
@@ -233,15 +229,12 @@ function processLogin(e)
 								if(containsAdminAll || array.indexOf(login_data.rights, "regions.notice")>=0)
 								{
 									var listItem;
-									childWidget = new dojox.mobile.TextBox({id: "regions_notice", placeHolder: "Enter notice here", style:'width:200px;'});
-									listItem = new dojox.mobile.ListItem();
+									listItem = new dojox.mobile.ListItem({
+											label:'Send Simulator Notice',
+											onclick:"dijit.registry.byId('simulatornoticedialog').show()",
+											clickable:true,
+											arrowClass:'mblDomButtonGrayKnob'});
 									list.addChild(listItem);
-									listItem.addChild(childWidget);
-									childWidget = new dojox.mobile.Button({label:"Send Notice"});
-									listItem.set('rightText','');
-									childWidget.placeAt(listItem.rightTextNode);
-									childWidget.startup();
-									childWidget.on("click", sendRegionsNotice);
 								}
 							}
 							
@@ -375,12 +368,7 @@ function switchToConfigurationIssues()
 		function(array, request, registry, TransitionEvent)
 	{
 		list = registry.byId("list_issues");
-		array.forEach(list.getChildren(),
-		function(child)
-		{
-			list.removeChild(child);
-			child.destroy();
-		});
+		list.destroyDescendants();
 		request("/admin/json", 
 		{
 			method:"POST",

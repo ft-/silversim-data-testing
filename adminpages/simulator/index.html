@@ -37,6 +37,37 @@
 		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
           style="width:100px;" onclick="dijit.registry.byId('errordialog').hide()">OK</button>
 	</div>
+	
+	<!------------------------------------------------------------------------->
+	<div id="simulatornoticedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Send Simulator Notice</div>
+		<input data-dojo-type="dojox/mobile/TextBox" id="regions_notice_text" placeHolder="Enter Text" style="width: 200px;"/></li>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="sendRegionsNotice()">Send</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('simulatornoticedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="estatenoticedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Send Estate Notice</div>
+		<input data-dojo-type="dojox/mobile/TextBox" id="estate_notice_text" placeHolder="Enter Text" style="width: 200px;"/></li>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="sendEstateNotice()">Send</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('estatenoticedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="regionnoticedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Send Region Notice</div>
+		<input data-dojo-type="dojox/mobile/TextBox" id="region_notice_text" placeHolder="Enter Text" style="width: 200px;"/></li>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('regionnoticedialog').hide()">Send</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('regionnoticedialog').hide()">Cancel</button>
+	</div>
+
 	<!------------------------------------------------------------------------->
 	<div id="viewmain" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Admin'">

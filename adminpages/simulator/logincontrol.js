@@ -51,12 +51,7 @@ function switchToLoginControl()
 		function(array, request, registry, TransitionEvent)
 	{
 		list = registry.byId("list_logincontrol");
-		array.forEach(list.getChildren(),
-		function(child)
-		{
-			list.removeChild(child);
-			child.destroy();
-		});
+		list.destroyDescendants();
 		request("/admin/json", 
 		{
 			method:"POST",

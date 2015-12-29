@@ -5,12 +5,7 @@ function switchToEstatesList(transitionDirection, fromview)
 		function(array, request, registry, TransitionEvent)
 	{
 		list = registry.byId("list_estates");
-		array.forEach(list.getChildren(),
-		function(child)
-		{
-			list.removeChild(child);
-			child.destroy();
-		});
+		list.destroyDescendants();
 		request("/admin/json", 
 		{
 			method:"POST",
@@ -98,6 +93,7 @@ function sendEstateNotice()
 {
 	require(["dijit/registry", "dojo/request"], function(registry, request)
 	{
+		registry.byId('estatenoticedialog').hide();
 		request("/admin/json", 
 		{
 			method:"POST",
@@ -105,7 +101,7 @@ function sendEstateNotice()
 			{ 
 				"method":"estate.notice",
 				"id":selectedEstateID,
-				"message":registry.byId('estatedetail_regionnotice').get('value'),
+				"message":registry.byId('estate_notice_text').get('value'),
 				"sessionid":sessionid
 			}),
 			headers:
@@ -143,37 +139,24 @@ function initEstateDetails()
 	require(["dojo/_base/array", "dijit/registry"], function(array, registry)
 	{
 		view = registry.byId("view_estatedetails");
-		array.forEach(view.getChildren(),
-		function(child)
-		{
-			view.removeChild(child);
-			child.destroy();
-		});
+		view.destroyDescendants();
 		
 		var childWidget;
 		if(containsAdminAll || array.indexOf(rights, "estate.notice")>=0)
 		{
-			childWidget = new dojox.mobile.RoundRectCategory({label:"Send Notice"});
-			view.addChild(childWidget);
 			var formWidget;
 			var listItem;
 			formWidget = new dojox.mobile.RoundRectList();
-			childWidget = new dojox.mobile.TextBox({id: "estatedetail_regionnotice", placeHolder: "Enter notice here", style: 'width: 300px;'});
-			listItem = new dojox.mobile.ListItem();
-			formWidget.addChild(listItem);
-			listItem.addChild(childWidget);
-			childWidget = new dojox.mobile.Button({label:"Send"});
 			view.addChild(formWidget);
-			listItem.set('rightText','');
-			childWidget.placeAt(listItem.rightTextNode);
-			childWidget.startup();
-			childWidget.on("click", function() { sendEstateNotice(); });
+			listItem = new dojox.mobile.ListItem({
+				label:"Send Estate Notice",
+				onclick:"dijit.registry.byId('estatenoticedialog').show()",
+				clickable:true,
+				arrowClass:'mblDomButtonGrayKnob'});
+			formWidget.addChild(listItem);
 		}
 
-		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
-		view.addChild(childWidget);
-
-		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
+		childWidget = new dojox.mobile.RoundRectCategory({label:"Owner"});
 		view.addChild(childWidget);
 
 		var formWidget = new dojox.mobile.RoundRectList();
@@ -204,6 +187,9 @@ function initEstateDetails()
 			formWidget.addChild(listItem);
 		}
 		
+		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
+		view.addChild(childWidget);
+
 		var formWidget = new dojox.mobile.RoundRectList();
 		var listItem;
 		view.addChild(formWidget);
@@ -569,12 +555,7 @@ function switchToEstateDetails(estateid)
 				
 				if(detailsList)
 				{
-					array.forEach(detailsList.getChildren(),
-					function(child)
-					{
-						detailsList.removeChild(child);
-						child.destroy();
-					});
+					detailsList.destroyDescendants();
 				}
 				
 				array.forEach(data.regions, function(region)
