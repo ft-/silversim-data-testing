@@ -355,7 +355,14 @@ function switchToEstateDetails(estateid)
 						detailsList = new dojox.mobile.RoundRectList({id:'estatedetails_regionmap'});
 						view.addChild(detailsList);
 					}
-					detailsList.addChild(new dojox.mobile.ListItem({'label':region.Name}));
+					if(region.Name)
+					{
+						detailsList.addChild(new dojox.mobile.ListItem({'label':region.Name}));
+					}
+					else
+					{
+						detailsList.addChild(new dojox.mobile.ListItem({'label':"? " + region.ID}));
+					}
 				});
 
 				if(detailsList && haveNoRegionAvail)
