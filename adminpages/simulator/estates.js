@@ -62,7 +62,7 @@ function switchToEstatesList(transitionDirection)
 				{
 					if(!registry.byId('estate_add'))
 					{
-						var tbWidget = new dojox.mobile.ToolBarButton({icon:'mblDomButtonWhitePlus', style:'float:right'});
+						var tbWidget = new dojox.mobile.ToolBarButton({id:'estate_add',icon:'mblDomButtonWhitePlus', style:'float:right'});
 						registry.byId('estates_header').addChild(tbWidget);
 					}
 				}
