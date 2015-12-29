@@ -68,6 +68,16 @@ function showErrorDialog(reason)
 }
 
 /******************************************************************************/
+function showErrorTextDialog(message)
+{
+	require(["dijit/registry"], function(registry)
+	{
+		registry.byId('errordialog_text').set('innerHTML', message);
+		registry.byId('errordialog').show();
+	});
+}
+
+/******************************************************************************/
 function generateResponse(challenge, password)
 {
 	return CryptoJS.SHA1(challenge + "+" + CryptoJS.SHA1(password)).toString();
@@ -235,7 +245,7 @@ function processLogin(e)
 									clickable:true,
 									label:"List"});
 								list.addChild(childWidget);
-								childWidget.on("click", function() {switchToEstatesList(1); });
+								childWidget.on("click", function() {switchToEstatesList(1,viewmain); });
 							}
 							
 							if(containsAdminAll ||

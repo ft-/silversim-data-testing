@@ -1,5 +1,5 @@
 /******************************************************************************/
-function switchToEstatesList(transitionDirection)
+function switchToEstatesList(transitionDirection, fromview)
 {
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
@@ -31,11 +31,15 @@ function switchToEstatesList(transitionDirection)
 				{
 					if(data.reason == 1)
 					{
-						new TransitionEvent(viewestateslist, {
+						new TransitionEvent(fromview, {
 							moveTo: "viewlogin",
 							transition: "slide",
 							transitionDir: -1
 						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
 					}
 					return;
 				}
@@ -60,25 +64,27 @@ function switchToEstatesList(transitionDirection)
 
 				if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 				{
-					if(!registry.byId('estate_add'))
+					if(!registry.byId('estate_add_button'))
 					{
-						var tbWidget = new dojox.mobile.ToolBarButton({id:'estate_add',icon:'mblDomButtonWhitePlus', style:'float:right'});
+						var tbWidget = new dojox.mobile.ToolBarButton({id:'estate_add_button',icon:'mblDomButtonWhitePlus', style:'float:right',moveTo:'viewestateadd',transition:'slide',transitionDir:1});
 						registry.byId('estates_header').addChild(tbWidget);
 					}
 				}
 				else
 				{
-					var tbWidget = registry.byId('estate_add');
+					var tbWidget = registry.byId('estate_add_button');
 					tbWidget.getEnclosingWidget().removeChild(tbWidget);
+					tbWidget.destroy();
 				}
 				
-				new TransitionEvent(viewmain, {
+				new TransitionEvent(fromview, {
 					moveTo: "viewestateslist",
 					transition: "slide",
 					transitionDir: transitionDirection
 				}).dispatch();
 			},
 			function(err) {
+				showErrorTextDialog(err.toString());
 			}
 		);
 	});
@@ -125,13 +131,13 @@ function sendEstateNotice()
 				}
 			},
 			function(err) {
+				showErrorTextDialog(err.toString());
 			}
 		);
 	});
 }
 
 /******************************************************************************/
-
 function initEstateDetails()
 {
 	require(["dojo/_base/array", "dijit/registry"], function(array, registry)
@@ -161,12 +167,43 @@ function initEstateDetails()
 			listItem.set('rightText','');
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
-			childWidget.on("click", sendEstateNotice);
+			childWidget.on("click", function() { sendEstateNotice(); });
 		}
 
 		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
 		view.addChild(childWidget);
 
+		childWidget = new dojox.mobile.RoundRectCategory({label:"Details"});
+		view.addChild(childWidget);
+
+		var formWidget = new dojox.mobile.RoundRectList();
+		var listItem;
+		view.addChild(formWidget);
+		
+		if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
+		{
+			childWidget = new dojox.mobile.TextBox({id:"estatedetail_owner"});
+			listItem = new dojox.mobile.ListItem({label:"Name"});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			
+			childWidget = new dojox.mobile.Button({label:'Change Owner'});
+			listItem = new dojox.mobile.ListItem({});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			childWidget.on('click', updateEstateOwner);
+			
+		}
+		else
+		{
+			listItem = new dojox.mobile.ListItem({id:"estatedetail_owner",label:"Name"});
+			formWidget.addChild(listItem);
+		}
+		
 		var formWidget = new dojox.mobile.RoundRectList();
 		var listItem;
 		view.addChild(formWidget);
@@ -209,6 +246,12 @@ function initEstateDetails()
 			childWidget.startup();
 			childWidget.on("click", function() { updateEstateData(); });
 			
+			var formWidget = new dojox.mobile.RoundRectList();
+			var listItem;
+			view.addChild(formWidget);
+			listItem = new dojox.mobile.ListItem({label:"Delete",arrowClass:'mblDomButtonRedCircleMinus',clickable:true});
+			formWidget.addChild(listItem);
+			listItem.on("click", function() {deleteEstate();});
 		}
 		else
 		{
@@ -224,6 +267,84 @@ function initEstateDetails()
 			listItem = new dojox.mobile.ListItem({id:"estatedetail_abuseemail",label:"Abuse Email"});
 			formWidget.addChild(listItem);
 		}
+		
+	});
+}
+
+/******************************************************************************/
+function addEstateData()
+{
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		var name = registry.byId('estateadd_name').get('value');
+		var owner = registry.byId('estateadd_owner').get('value');
+		var pricepermeter = registry.byId('estateadd_pricepermeter').get('value');
+		var billablefactor = registry.byId('estateadd_billablefactor').get('value');
+		var abuseemail = registry.byId('estateadd_abuseemail').get('value');
+		if(pricepermeter=="")
+		{
+			pricepermeter = 1;
+		}
+		else
+		{
+			pricepermeter = parseInt(pricepermeter);
+		}
+		if(billablefactor=="")
+		{
+			billablefactor = 1.;
+		}
+		else
+		{
+			billablefactor = parseFloat(billablefactor);
+		}
+		
+		var json_data = JSON.stringify(
+			{ 
+				"method":"estate.create",
+				"parentestateid":1,
+				"name":name,
+				"owner":owner,
+				"pricepermeter":pricepermeter,
+				"billablefactor":billablefactor,
+				"abuseemail":abuseemail,
+				"sessionid":sessionid
+			});
+		
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: json_data,
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewestateadd, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+
+				switchToEstatesList(-1, viewestateadd);
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
 		
 	});
 }
@@ -262,11 +383,15 @@ function updateEstateData()
 				{
 					if(data.reason == 1)
 					{
-						new TransitionEvent(viewestatedetails, {
+						new dojox.mobile.TransitionEvent(viewestatedetails, {
 							moveTo: "viewlogin",
 							transition: "slide",
 							transitionDir: -1
 						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
 					}
 					return;
 				}
@@ -274,6 +399,106 @@ function updateEstateData()
 				registry.byId("estatedetail_nameinfo").set('label', "Estate " + estateName);
 			},
 			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function updateEstateOwner()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		var estateName = registry.byId("estatedetail_name").get('value');
+		var estateOwner = registry.byId("estatedetail_owner").get('value');
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"estate.update",
+				"id":selectedEstateID,
+				"name":estateName,
+				"owner":estateOwner,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewestatedetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+
+				registry.byId("estatedetail_nameinfo").set('label', "Estate " + estateName);
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function deleteEstate()
+{
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"estate.delete",
+				"id":parseInt(selectedEstateID),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewestatedetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+				switchToEstatesList(-1, viewestatedetails);
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
 			}
 		);
 	});
@@ -313,12 +538,17 @@ function switchToEstateDetails(estateid)
 							transitionDir: -1
 						}).dispatch();
 					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
 					return;
 				}
 
 				registry.byId("estatedetail_nameinfo").set('label', "Estate " + data.estate.Name);
 				if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 				{
+					registry.byId("estatedetail_owner").set('value',data.estate.Owner);
 					registry.byId("estatedetail_name").set('value',data.estate.Name);
 					registry.byId("estatedetail_pricepermeter").set('value',data.estate.PricePerMeter);
 					registry.byId("estatedetail_billablefactor").set('value',data.estate.BillableFactor);
@@ -326,6 +556,7 @@ function switchToEstateDetails(estateid)
 				}
 				else
 				{
+					registry.byId("estatedetail_owner").set('rightText',data.estate.Owner);
 					registry.byId("estatedetail_name").set('rightText',data.estate.Name);
 					registry.byId("estatedetail_pricepermeter").set('rightText',data.estate.PricePerMeter);
 					registry.byId("estatedetail_billablefactor").set('rightText',data.estate.BillableFactor);
@@ -371,13 +602,14 @@ function switchToEstateDetails(estateid)
 					detailsList.destroy();
 				}
 				
-				new TransitionEvent(viewmain, {
+				new TransitionEvent(viewestateslist, {
 					moveTo: "viewestatedetails",
 					transition: "slide",
 					transitionDir: 1
 				}).dispatch();
 			},
 			function(err) {
+				showErrorTextDialog(err.toString());
 			}
 		);
 	});

@@ -21,9 +21,9 @@
 	<div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
 		<h1 data-dojo-type="dojox/mobile/Heading">Login</h1>
 		<ul data-dojo-type="dojox/mobile/RoundRectList">
-		<li data-dojo-type="dojox/mobile/ListItem">Username
+		<li data-dojo-type="dojox/mobile/ListItem">
 		<input data-dojo-type="dojox/mobile/TextBox" id="user" placeHolder="Username"/></li>
-		<li data-dojo-type="dojox/mobile/ListItem">Password
+		<li data-dojo-type="dojox/mobile/ListItem">
 		<input type="password" data-dojo-type="dojox/mobile/TextBox" id="pass" placeHolder="Password"/></li>
 		<li data-dojo-type="dojox/mobile/ListItem"><button data-dojo-type="dojox/mobile/Button" data-dojo-props="onClick:function(e){processLogin(e)}">Login</button></li>
 		</ul>
@@ -77,7 +77,7 @@
 	<div id="viewestatedetails" data-dojo-type="dojox/mobile/View">
 		<h1 id="estatedetail_nameinfo" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Estate'">
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
-						data-dojo-props="onClick: function(e){ switchToEstatesList(-1); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+						data-dojo-props="onClick: function(e){ switchToEstatesList(-1, viewestatedetails); }, arrow: 'left', label: 'Back'" style="float:left"></div>
 				</h1>
 		<div id="view_estatedetails" data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
@@ -87,9 +87,30 @@
 	<div id="viewestateadd" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Estate'">
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
-						data-dojo-props="onClick: function(e){ switchToEstatesList(-1); }, arrow: 'left', label: 'Abort'" style="float:left"></div>
+						data-dojo-props="onClick: function(e){ switchToEstatesList(-1,viewestateadd); }, arrow: 'left', label: 'Abort'" style="float:left"></div>
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="icon: 'mblDomButtonWhitePlus',
+						                 onClick: function(){ addEstateData(); }"
+						style="float:right;"></div>
 				</h1>
-		<div data-dojo-type="dojox/mobile/ScrollableView">
+		<div id="estateadd_subview" data-dojo-type="dojox/mobile/ScrollableView">
+			<ul data-dojo-type="dojox/mobile/RoundRectList">
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="estateadd_name" placeHolder="Estate Name"/></li>
+				</li>
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="estateadd_owner" placeHolder="Owner"/></li>
+				</li>
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="estateadd_pricepermeter" placeHolder="Price Per Meter"/></li>
+				</li>
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="estateadd_billablefactor" placeHolder="Billable Factor"/></li>
+				</li>
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="estateadd_abuseemail" placeHolder="Abuse Email"/></li>
+				</li>
+			</ul>
 		</div>
 	</div>
 
