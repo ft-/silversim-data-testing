@@ -121,7 +121,7 @@ function sendEstateNotice()
 						}).dispatch();
 						return;
 					}
-					alert("Error: " + data.reason);
+					showErrorDialog(data.reason);
 				}
 			},
 			function(err) {

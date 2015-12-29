@@ -23,6 +23,7 @@ require([
 	"dojox/mobile/TextBox",
 	"dojox/mobile/Slider",
 	"dojox/mobile/Switch",
+	"dojox/mobile/SimpleDialog",
 	"dojox/mobile/RoundRectCategory",
 	"dojox/mobile/Pane",
 ], function (parser) {
@@ -30,6 +31,41 @@ require([
 	parser.parse();
 });
 
+
+/******************************************************************************/
+function showErrorDialog(reason)
+{
+	var message;
+
+	switch(reason)
+	{
+		case 1: message = "Not logged in"; break;
+		case 2: message = "Not found"; break;
+        case 3: message = "Insufficient rights"; break;
+        case 4: message = "Invalid request"; break;
+        case 5: message = "Already exists"; break;
+        case 6: message = "Not possible"; break;
+        case 7: message = "In use"; break;
+        case 8: message = "Missing SessionId"; break;
+        case 9: message = "Missing Method"; break;
+        case 10: message = "Invalid session"; break;
+        case 11: message = "Invalid User and/or password"; break;
+        case 12: message = "Unknown method"; break;
+        case 13: message = "Already started"; break;
+        case 14: message = "Failed to start"; break;
+        case 15: message = "Not running"; break;
+        case 16: message = "Is running"; break;
+        case 17: message = "Invalid parameter"; break;
+        case 18: messages = "No estates"; break;
+		default: message = "Unknown error "+ reason; break;
+	}
+	
+	require(["dijit/registry"], function(registry)
+	{
+		registry.byId('errordialog_text').set('innerHTML', message);
+		registry.byId('errordialog').show();
+	});
+}
 
 /******************************************************************************/
 function generateResponse(challenge, password)
@@ -70,7 +106,7 @@ function sendRegionsNotice()
 						}).dispatch();
 						return;
 					}
-					alert("Error: " + data.reason);
+					showErrorDialog(data.reason);
 				}
 			},
 			function(err) {
@@ -105,7 +141,7 @@ function processLogin(e)
 				{
 					if(!challenge_data.success)
 					{
-						alert("Login not possible. Code: "+ challenge_data.reason);
+						showErrorDialog(challenge_data.reason);
 						return;
 					}
 					
@@ -134,7 +170,7 @@ function processLogin(e)
 						{
 							if(!login_data.success)
 							{
-								alert("Login failed: reason " + login_data.reason);
+								showErrorDialog(login_data.reason);
 								return;
 							}
 							
@@ -297,7 +333,7 @@ function processLogout(e)
 				{
 					if(!logout_data.success)
 					{
-						alert("Logout not possible. Code: "+ logout_data.reason);
+						showErrorDialog(logout_data.reason);
 					}
 					new TransitionEvent(viewmain, {
 						moveTo: "viewlogin",

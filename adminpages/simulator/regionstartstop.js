@@ -33,7 +33,7 @@ function startStopRegion(regionid, value)
 					}
 					else
 					{
-						alert("Failed "+regions_data.reason);
+						showErrorDialog(regions_data.reason);
 					}
 					return;
 				}

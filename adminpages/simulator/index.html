@@ -30,6 +30,13 @@
 	</div>
 	
 	<!------------------------------------------------------------------------->
+	<div id="errordialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Action failed</div>
+		<div id="errordialog_text" data-dojo-type="dojox/mobile/Pane" class="mblSimpleDialogText"></div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('errordialog').hide()">OK</button>
+	</div>
+	<!------------------------------------------------------------------------->
 	<div id="viewmain" data-dojo-type="dojox/mobile/View">
 		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Admin'">
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
@@ -73,6 +80,16 @@
 						data-dojo-props="onClick: function(e){ switchToEstatesList(-1); }, arrow: 'left', label: 'Back'" style="float:left"></div>
 				</h1>
 		<div id="view_estatedetails" data-dojo-type="dojox/mobile/ScrollableView">
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewestateadd" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Estate'">
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToEstatesList(-1); }, arrow: 'left', label: 'Abort'" style="float:left"></div>
+				</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
 	</div>
 
