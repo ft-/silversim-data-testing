@@ -158,7 +158,7 @@ function initEstateDetails()
 			var formWidget;
 			var listItem;
 			formWidget = new dojox.mobile.RoundRectList();
-			childWidget = new dojox.mobile.TextBox({id: "estatedetail_regionnotice", placeHolder: "Enter notice here"});
+			childWidget = new dojox.mobile.TextBox({id: "estatedetail_regionnotice", placeHolder: "Enter notice here", style: 'width: 300px;'});
 			listItem = new dojox.mobile.ListItem();
 			formWidget.addChild(listItem);
 			listItem.addChild(childWidget);
@@ -182,7 +182,7 @@ function initEstateDetails()
 		
 		if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 		{
-			childWidget = new dojox.mobile.TextBox({id:"estatedetail_owner"});
+			childWidget = new dojox.mobile.TextBox({id:"estatedetail_owner", style:'width:200px;'});
 			listItem = new dojox.mobile.ListItem({label:"Name"});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
@@ -210,28 +210,28 @@ function initEstateDetails()
 		
 		if(containsAdminAll || array.indexOf(rights, "estates.manage")>=0)
 		{
-			childWidget = new dojox.mobile.TextBox({id:"estatedetail_name"});
+			childWidget = new dojox.mobile.TextBox({id:"estatedetail_name", style: 'width: 200px;'});
 			listItem = new dojox.mobile.ListItem({label:"Name"});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 			
-			childWidget = new dojox.mobile.TextBox({id:"estatedetail_pricepermeter"});
+			childWidget = new dojox.mobile.TextBox({id:"estatedetail_pricepermeter", style: 'width: 200px;'});
 			listItem = new dojox.mobile.ListItem({label:"Price Per Meter"});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 			
-			childWidget = new dojox.mobile.TextBox({id:"estatedetail_billablefactor"});
+			childWidget = new dojox.mobile.TextBox({id:"estatedetail_billablefactor", style: 'width: 200px;'});
 			listItem = new dojox.mobile.ListItem({label:"Billable Factor"});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 			
-			childWidget = new dojox.mobile.TextBox({id:"estatedetail_abuseemail"});
+			childWidget = new dojox.mobile.TextBox({id:"estatedetail_abuseemail", style: 'width: 200px;'});
 			listItem = new dojox.mobile.ListItem({label:"Abuse Email"});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');

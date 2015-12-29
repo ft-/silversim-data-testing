@@ -223,7 +223,7 @@ function processLogin(e)
 								if(containsAdminAll || array.indexOf(login_data.rights, "regions.notice")>=0)
 								{
 									var listItem;
-									childWidget = new dojox.mobile.TextBox({id: "regions_notice", placeHolder: "Enter notice here"});
+									childWidget = new dojox.mobile.TextBox({id: "regions_notice", placeHolder: "Enter notice here", style:'width:200px;'});
 									listItem = new dojox.mobile.ListItem();
 									list.addChild(listItem);
 									listItem.addChild(childWidget);
