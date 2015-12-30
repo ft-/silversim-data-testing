@@ -145,6 +145,7 @@
 						style="float:right;"></div>
 				</h1>
 		<div id="regionadd_subview" data-dojo-type="dojox/mobile/ScrollableView">
+			<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Details</h2>
 			<ul data-dojo-type="dojox/mobile/RoundRectList">
 				<li data-dojo-type="dojox/mobile/ListItem">
 					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_name" placeHolder="Region Name" style="width: 200px;"/></li>
@@ -152,6 +153,39 @@
 				<li data-dojo-type="dojox/mobile/ListItem">
 					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_owner" placeHolder="Owner" style="width: 200px;"/></li>
 				</li>
+				
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_port" placeHolder="Port" style="width: 200px;"/></li>
+				</li>
+
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_location" placeHolder="Location x,y" style="width: 200px;"/></li>
+				</li>
+
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_size" placeHolder="Size x,y" style="width: 200px;"/></li>
+				</li>
+
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_productname" placeHolder="Product Name" style="width: 200px;"/></li>
+				</li>
+
+				<li data-dojo-type="dojox/mobile/ListItem">
+					Auto-Start
+					<div id="regionadd_autostart" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+				</li>
+			</ul>
+			
+			<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Access</h2>
+			<ul id="regionadd_access" data-dojo-type="dojox/mobile/RoundRectList" data-dojo-props="select:'single'">
+				<li data-dojo-type="dojox/mobile/ListItem" id="regionadd_access_adult" onclick="selectRegionAddAccess('adult')" data-dojo-props="checked:false,clickable:true,noArrow:true">Adult</li>
+				<li data-dojo-type="dojox/mobile/ListItem" id="regionadd_access_mature" onclick="selectRegionAddAccess('mature')" data-dojo-props="checked:true,clickable:true,noArrow:true">Mature</li>
+				<li data-dojo-type="dojox/mobile/ListItem" id="regionadd_access_pg" onclick="selectRegionAddAccess('pg')" data-dojo-props="checked:false,clickable:true,noArrow:true">PG</li>
+				<li data-dojo-type="dojox/mobile/ListItem" id="regionadd_access_trial" onclick="selectRegionAddAccess('trial')" data-dojo-props="checked:false,clickable:true,noArrow:true">Trial</li>
+			</ul>
+
+			<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Estate</h2>
+			<ul id="regionadd_estateselector" data-dojo-type="dojox/mobile/RoundRectList" data-dojo-props="select:'single'">
 			</ul>
 		</div>
 	</div>
