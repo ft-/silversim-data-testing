@@ -352,6 +352,63 @@ function selectRegionChangeEstate(estateID, estateName)
 }
 
 /******************************************************************************/
+function selectRegionChangeAccess(access, accessName)
+{
+	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+		function(array, request, registry, TransitionEvent)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.change.access",
+				"id":selectedRegionID,
+				"access":access,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewregionestatechangelist, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+				
+				
+				registry.byId('regiondetail_access').set('rightText', accessName);
+			
+				new TransitionEvent(viewregionestatechangelist, {
+					moveTo: "viewregiondetails",
+					transition: "slide",
+					transitionDir: -1
+				}).dispatch();
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
 function switchToRegionEstateChange()
 {
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
@@ -534,6 +591,20 @@ function initRegionDetails()
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 			
+			childWidget = new dojox.mobile.TextBox({id:"regiondetail_port", style: 'width: 200px;'});
+			listItem = new dojox.mobile.ListItem({label:"Port"});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			
+			childWidget = new dojox.mobile.TextBox({id:"regiondetail_productname", style: 'width: 200px;'});
+			listItem = new dojox.mobile.ListItem({label:"Product Name"});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			
 			childWidget = new dojox.mobile.Button({label:'Update'});
 			listItem = new dojox.mobile.ListItem({});
 			formWidget.addChild(listItem);
@@ -542,17 +613,65 @@ function initRegionDetails()
 			childWidget.startup();
 			childWidget.on("click", function() { updateRegionData(); });
 			
-			var formWidget = new dojox.mobile.RoundRectList();
-			var listItem;
-			view.addChild(formWidget);
-			listItem = new dojox.mobile.ListItem({label:"Delete",arrowClass:'mblDomButtonRedCircleMinus',clickable:true});
-			formWidget.addChild(listItem);
-			listItem.on("click", function() {dijit.registry.byId('confirmregiondeletedialog').show();});
 		}
 		else
 		{
 			listItem = new dojox.mobile.ListItem({id:"regiondetail_name",label:"Name"});
 			formWidget.addChild(listItem);
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_port",label:"Port"});
+			formWidget.addChild(listItem);
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_productname",label:"Product Name"});
+			formWidget.addChild(listItem);
+		}
+
+		childWidget = new dojox.mobile.RoundRectCategory({label:"Location"});
+		view.addChild(childWidget);
+
+		var formWidget = new dojox.mobile.RoundRectList();
+		var listItem;
+		view.addChild(formWidget);
+		
+		if(containsAdminAll || array.indexOf(rights, "regions.manage")>=0)
+		{
+			childWidget = new dojox.mobile.TextBox({id:"regiondetail_location", style: 'width: 200px;'});
+			listItem = new dojox.mobile.ListItem({label:"Position"});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			
+			childWidget = new dojox.mobile.Button({label:'Update'});
+			listItem = new dojox.mobile.ListItem({});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			childWidget.on("click", function() { updateRegionLocation(); });
+		}
+		else
+		{
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_location",label:"Position"});
+			formWidget.addChild(listItem);
+		}
+
+		childWidget = new dojox.mobile.RoundRectCategory({label:"Access Level"});
+		view.addChild(childWidget);
+
+		var formWidget = new dojox.mobile.RoundRectList();
+		var listItem;
+		view.addChild(formWidget);
+		
+		if(containsAdminAll || array.indexOf(rights, "regions.manage")>=0)
+		{
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_access",label:"Access",moveTo:'viewregionaccesschangelist'});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+		}
+		else
+		{
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_access",label:"Access"});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
 		}
 		
 		childWidget = new dojox.mobile.RoundRectCategory({label:"Estate Information"});
@@ -574,6 +693,16 @@ function initRegionDetails()
 			listItem = new dojox.mobile.ListItem({id:"regiondetail_estate",label:"Estate"});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
+		}
+		
+		if(containsAdminAll ||array.indexOf(rights, "regions.manage")>=0)
+		{
+			var formWidget = new dojox.mobile.RoundRectList();
+			var listItem;
+			view.addChild(formWidget);
+			listItem = new dojox.mobile.ListItem({label:"Delete",arrowClass:'mblDomButtonRedCircleMinus',clickable:true});
+			formWidget.addChild(listItem);
+			listItem.on("click", function() {dijit.registry.byId('confirmregiondeletedialog').show();});
 		}
 	});
 }
@@ -667,7 +796,8 @@ function switchToRegionDetails(regionid)
 					return;
 				}
 
-				registry.byId("change_estate_region_header").set('label', "Select Estate for region " + data.region.Name)
+				registry.byId("change_estate_region_header").set('label', "Select Estate for Region " + data.region.Name);
+				registry.byId("change_access_region_header").set('label', "Select Access for Region " + data.region.Name);
 				registry.byId("regiondetail_nameinfo").set('label', "Region " + data.region.Name);
 				var fieldToUpdate = 'rightText';
 				if(containsAdminAll || array.indexOf(rights, "regions.manage")>=0)
@@ -676,6 +806,43 @@ function switchToRegionDetails(regionid)
 				}
 				registry.byId("regiondetail_owner").set(fieldToUpdate,data.region.Owner);
 				registry.byId("regiondetail_name").set(fieldToUpdate,data.region.Name);
+				registry.byId("regiondetail_location").set(fieldToUpdate,data.region.Location);
+				registry.byId("regiondetail_port").set(fieldToUpdate,data.region.Port);
+				registry.byId("regiondetail_productname").set(fieldToUpdate,data.region.ProductName);
+				switch(data.region.Access)
+				{
+					case "trial": 
+						registry.byId("regiondetail_access").set('rightText','Trial');
+						registry.byId("list_access_change_region_adult").set('checked',false);
+						registry.byId("list_access_change_region_mature").set('checked',false);
+						registry.byId("list_access_change_region_pg").set('checked',false);
+						registry.byId("list_access_change_region_trial").set('checked',true);
+						break;
+					case "pg": 
+						registry.byId("regiondetail_access").set('rightText','PG');
+						registry.byId("list_access_change_region_adult").set('checked',false);
+						registry.byId("list_access_change_region_mature").set('checked',false);
+						registry.byId("list_access_change_region_pg").set('checked',true);
+						registry.byId("list_access_change_region_trial").set('checked',false);
+						break;
+					case "mature": 
+						registry.byId("regiondetail_access").set('rightText','Mature');
+						registry.byId("list_access_change_region_adult").set('checked',false);
+						registry.byId("list_access_change_region_mature").set('checked',true);
+						registry.byId("list_access_change_region_pg").set('checked',false);
+						registry.byId("list_access_change_region_trial").set('checked',false);
+						break;
+					case "adult": 
+						registry.byId("regiondetail_access").set('rightText','Adult');
+						registry.byId("list_access_change_region_adult").set('checked',true);
+						registry.byId("list_access_change_region_mature").set('checked',false);
+						registry.byId("list_access_change_region_pg").set('checked',false);
+						registry.byId("list_access_change_region_trial").set('checked',false);
+						break;
+					default:
+						registry.byId("regiondetail_access").set('rightText','Unknown');
+						break;
+				}
 				
 				if(data.estate)
 				{
