@@ -253,6 +253,10 @@ function initEstateDetails()
 			listItem = new dojox.mobile.ListItem({id:"estatedetail_abuseemail",label:"Abuse Email"});
 			formWidget.addChild(listItem);
 		}
+
+		view.addChild(new dojox.mobile.RoundRectCategory({label:"Connected Regions"}));
+		detailsList = new dojox.mobile.RoundRectList({id:'estatedetails_regionmap'});
+		view.addChild(detailsList);
 		
 	});
 }
@@ -550,23 +554,11 @@ function switchToEstateDetails(estateid)
 				}
 
 				var detailsList = registry.byId('estatedetails_regionmap');
-				var haveNoRegionAvail = true;
-				var view = registry.byId("view_estatedetails");
 				
-				if(detailsList)
-				{
-					detailsList.destroyDescendants();
-				}
+				detailsList.destroyDescendants();
 				
 				array.forEach(data.regions, function(region)
 				{
-					haveNoRegionAvail = false;
-					if(!detailsList)
-					{
-						view.addChild(new dojox.mobile.RoundRectCategory({label:"Connected Regions"}));
-						detailsList = new dojox.mobile.RoundRectList({id:'estatedetails_regionmap'});
-						view.addChild(detailsList);
-					}
 					if(region.Name)
 					{
 						detailsList.addChild(new dojox.mobile.ListItem({'label':region.Name}));
@@ -576,12 +568,6 @@ function switchToEstateDetails(estateid)
 						detailsList.addChild(new dojox.mobile.ListItem({'label':"? " + region.ID}));
 					}
 				});
-
-				if(detailsList && haveNoRegionAvail)
-				{
-					view.removeChild(detailsList);
-					detailsList.destroy();
-				}
 				
 				new TransitionEvent(viewestateslist, {
 					moveTo: "viewestatedetails",
