@@ -237,7 +237,7 @@ function initEstateDetails()
 			view.addChild(formWidget);
 			listItem = new dojox.mobile.ListItem({label:"Delete",arrowClass:'mblDomButtonRedCircleMinus',clickable:true});
 			formWidget.addChild(listItem);
-			listItem.on("click", function() {deleteEstate();});
+			listItem.on("click", function() {dijit.registry.byId('confirmestatedeletedialog').show();});
 		}
 		else
 		{
@@ -452,6 +452,7 @@ function deleteEstate()
 {
 	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
 	{
+		registry.byId('confirmestatedeletedialog').hide();
 		request("/admin/json", 
 		{
 			method:"POST",

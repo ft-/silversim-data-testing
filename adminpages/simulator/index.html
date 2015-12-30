@@ -15,6 +15,7 @@
 	<script src="/admin/logincontrol.js"></script>
 	<script src="/admin/regionenable.js"></script>
 	<script src="/admin/regionstartstop.js"></script>
+	<script src="/admin/regions.js"></script>
 	<script src="/admin/console.js"></script>
 	<script src="/admin/modules.js"></script>
 </head>
@@ -38,6 +39,24 @@
           style="width:100px;" onclick="dijit.registry.byId('errordialog').hide()">OK</button>
 	</div>
 	
+	<!------------------------------------------------------------------------->
+	<div id="confirmestatedeletedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Do you really want to delete this estate?</div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="deleteEstate()">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmestatedeletedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="confirmregiondeletedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Do you really want to delete this region?</div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="deleteRegion()">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmregiondeletedialog').hide()">Cancel</button>
+	</div>
+
 	<!------------------------------------------------------------------------->
 	<div id="simulatornoticedialog" data-dojo-type="dojox/mobile/SimpleDialog">
 		<div class="mblSimpleDialogTitle">Send Simulator Notice</div>
@@ -63,7 +82,7 @@
 		<div class="mblSimpleDialogTitle">Send Region Notice</div>
 		<input data-dojo-type="dojox/mobile/TextBox" id="region_notice_text" placeHolder="Enter Text" style="width: 200px;"/></li>
 		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
-          style="width:100px;" onclick="dijit.registry.byId('regionnoticedialog').hide()">Send</button>
+          style="width:100px;" onclick="sendRegionNotice()">Send</button>
 		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
           style="width:100px;" onclick="dijit.registry.byId('regionnoticedialog').hide()">Cancel</button>
 	</div>
@@ -97,6 +116,47 @@
 	</div>
 	
 	<!------------------------------------------------------------------------->
+	<div id="viewregionslist" data-dojo-type="dojox/mobile/View">
+		<h1 id="regions_header" data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Regions</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_regions" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewregiondetails" data-dojo-type="dojox/mobile/View">
+		<h1 id="regiondetail_nameinfo" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Region'">
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToRegionsList(-1, viewregiondetails); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+				</h1>
+		<div id="view_regiondetails" data-dojo-type="dojox/mobile/ScrollableView">
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewregionadd" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'New Region'">
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToRegionsList(-1,viewestateadd); }, arrow: 'left', label: 'Abort'" style="float:left"></div>
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="icon: 'mblDomButtonWhitePlus',
+						                 onClick: function(){ addRegionData(); }"
+						style="float:right;"></div>
+				</h1>
+		<div id="regionadd_subview" data-dojo-type="dojox/mobile/ScrollableView">
+			<ul data-dojo-type="dojox/mobile/RoundRectList">
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_name" placeHolder="Region Name" style="width: 200px;"/></li>
+				</li>
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input data-dojo-type="dojox/mobile/TextBox" id="regionadd_owner" placeHolder="Owner" style="width: 200px;"/></li>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
 	<div id="viewestateslist" data-dojo-type="dojox/mobile/View">
 		<h1 id="estates_header" data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Estates</h1>
 		<div data-dojo-type="dojox/mobile/ScrollableView">
@@ -117,7 +177,7 @@
 
 	<!------------------------------------------------------------------------->
 	<div id="viewestateadd" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Estate'">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'New Estate'">
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
 						data-dojo-props="onClick: function(e){ switchToEstatesList(-1,viewestateadd); }, arrow: 'left', label: 'Abort'" style="float:left"></div>
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 

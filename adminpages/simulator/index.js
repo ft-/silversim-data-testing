@@ -254,11 +254,18 @@ function processLogin(e)
 							if(containsAdminAll ||
 								array.indexOf(login_data.rights, "regions.control")>=0 ||
 								array.indexOf(login_data.rights, "regions.manage") >= 0 ||
-								array.indexOf(login_data.rights, "regions.logincontrol")>=0)
+								array.indexOf(login_data.rights, "regions.logincontrol")>=0 ||
+								array.indexOf(login_data.rights, "regions.notice")>=0)
 							{
 								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Regions"}));
 								var list = new dojox.mobile.RoundRectList();
 								mainview.addChild(list);
+								
+								childWidget = new dojox.mobile.ListItem({
+									clickable:true,
+									label:"List"});
+								list.addChild(childWidget);
+								childWidget.on("click", function() { switchToRegionsList(1, viewmain); });
 								
 								if(containsAdminAll || array.indexOf(login_data.rights, "regions.control")>=0)
 								{
@@ -303,6 +310,7 @@ function processLogin(e)
 							}
 							
 							initEstateDetails();
+							initRegionDetails();
 							
 							new TransitionEvent(viewlogin, {
 								moveTo: "viewmain",
