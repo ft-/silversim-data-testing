@@ -17,6 +17,7 @@
 	<script src="/admin/regionstartstop.js"></script>
 	<script src="/admin/regions.js"></script>
 	<script src="/admin/console.js"></script>
+	<script src="/admin/agents.js"></script>
 	<script src="/admin/modules.js"></script>
 </head>
 <body style="visibility:hidden;">
@@ -209,6 +210,38 @@
 				<li id="list_access_change_region_pg" data-dojo-type="dojox/mobile/ListItem" onclick="selectRegionChangeAccess('pg','PG')" data-dojo-props="checked:false,clickable:true,noArrow:true">PG</li>
 				<li id="list_access_change_region_trial" data-dojo-type="dojox/mobile/ListItem" onclick="selectRegionChangeAccess('trial','Trial')" data-dojo-props="checked:false,clickable:true,noArrow:true">Trial</li>
 			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewagent_regionslist" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Select region for viewing agents</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_agent_regions" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewagentlist" data-dojo-type="dojox/mobile/View">
+		<h1 id="agentlist_header" data-dojo-type="dojox/mobile/Heading">Agents on Region
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToAgentRegionsList(-1, viewagentlist); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+		</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_agents_in_region" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewagent" data-dojo-type="dojox/mobile/View">
+		<h1 id="agentdetails_header" data-dojo-type="dojox/mobile/Heading">Agent x on Region y
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToActualAgentList(-1, viewagentlist); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+		</h1>
+		<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Agents</h2>
+		<div id="regionagentdetails" data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
 	</div>
 

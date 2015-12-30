@@ -255,7 +255,8 @@ function processLogin(e)
 								array.indexOf(login_data.rights, "regions.control")>=0 ||
 								array.indexOf(login_data.rights, "regions.manage") >= 0 ||
 								array.indexOf(login_data.rights, "regions.logincontrol")>=0 ||
-								array.indexOf(login_data.rights, "regions.notice")>=0)
+								array.indexOf(login_data.rights, "regions.notice")>=0 ||
+								array.indexOf(login_data.rights, "regions.agents.view")>=0)
 							{
 								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Regions"}));
 								var list = new dojox.mobile.RoundRectList();
@@ -293,6 +294,15 @@ function processLogin(e)
 									list.addChild(childWidget);
 									childWidget.on("click", switchToLoginControl);
 								}
+								
+								if(containsAdminAll ||array.indexOf(login_data.rights, "regions.agents.view")>=0)
+								{
+									childWidget = new dojox.mobile.ListItem({
+										clickable:true,
+										label:"Agents List per Region"});
+									list.addChild(childWidget);
+									childWidget.on("click", function() { switchToAgentRegionsList(1, viewmain);});
+								}
 							}
 							
 							if(containsAdminAll || array.indexOf(login_data.rights, "console.access")>=0)
@@ -311,6 +321,7 @@ function processLogin(e)
 							
 							initEstateDetails();
 							initRegionDetails();
+							initAgentDetails();
 							
 							new TransitionEvent(viewlogin, {
 								moveTo: "viewmain",
@@ -352,7 +363,7 @@ function processLogout(e)
 			}).then(
 				function(logout_data) 
 				{
-					if(!logout_data.success)
+					if(!logout_data.success && logout_data.reason != 1)
 					{
 						showErrorDialog(logout_data.reason);
 					}

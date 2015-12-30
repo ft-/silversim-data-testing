@@ -90,6 +90,141 @@ function switchToRegionsList(transitionDirection, fromview)
 var selectedRegionID;
 
 /******************************************************************************/
+function updateRegionOwner()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		registry.byId('regionnoticedialog').hide();
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.change.owner",
+				"id":selectedRegionID,
+				"owner":registry.byId('regiondetail_owner').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewregionslist, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+						return;
+					}
+					showErrorDialog(data.reason);
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function updateRegionData()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.change",
+				"id":selectedRegionID,
+				"port":parseInt(registry.byId('regiondetail_port').get('value')),
+				"name":registry.byId('regiondetail_name').get('value'),
+				"productname":registry.byId('regiondetail_productname').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewregionslist, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+						return;
+					}
+					showErrorDialog(data.reason);
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function updateRegionLocation()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.change.location",
+				"id":selectedRegionID,
+				"location":registry.byId('regiondetail_location').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewregionslist, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+						return;
+					}
+					showErrorDialog(data.reason);
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
 function sendRegionNotice()
 {
 	require(["dijit/registry", "dojo/request"], function(registry, request)
@@ -605,7 +740,7 @@ function initRegionDetails()
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 			
-			childWidget = new dojox.mobile.Button({label:'Update'});
+			childWidget = new dojox.mobile.Button({label:'Change'});
 			listItem = new dojox.mobile.ListItem({});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
@@ -640,7 +775,7 @@ function initRegionDetails()
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 			
-			childWidget = new dojox.mobile.Button({label:'Update'});
+			childWidget = new dojox.mobile.Button({label:'Relocate'});
 			listItem = new dojox.mobile.ListItem({});
 			formWidget.addChild(listItem);
 			listItem.set('rightText', '');
@@ -807,7 +942,7 @@ function switchToRegionDetails(regionid)
 				registry.byId("regiondetail_owner").set(fieldToUpdate,data.region.Owner);
 				registry.byId("regiondetail_name").set(fieldToUpdate,data.region.Name);
 				registry.byId("regiondetail_location").set(fieldToUpdate,data.region.Location);
-				registry.byId("regiondetail_port").set(fieldToUpdate,data.region.Port);
+				registry.byId("regiondetail_port").set(fieldToUpdate,data.region.ServerPort);
 				registry.byId("regiondetail_productname").set(fieldToUpdate,data.region.ProductName);
 				switch(data.region.Access)
 				{
