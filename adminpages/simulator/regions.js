@@ -143,8 +143,7 @@ function selectRegionAddAccess(access)
 
 /******************************************************************************/
 var selectedRegionAddEstate;
-var currentRegionEstate;
-
+var activeRegionEstate;
 function selectRegionAddEstate(estateid)
 {
 	selectedRegionAddEstate = estateid;
@@ -296,6 +295,139 @@ function switchToRegionAdd()
 }
 
 /******************************************************************************/
+function selectRegionChangeEstate(estateID, estateName)
+{
+	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+		function(array, request, registry, TransitionEvent)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.change.estate",
+				"id":selectedRegionID,
+				"estateid":estateID,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewregionestatechangelist, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+				
+				
+				registry.byId('regiondetail_estate').set('rightText', estateName);
+			
+				new TransitionEvent(viewregionestatechangelist, {
+					moveTo: "viewregiondetails",
+					transition: "slide",
+					transitionDir: -1
+				}).dispatch();
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function switchToRegionEstateChange()
+{
+	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+		function(array, request, registry, TransitionEvent)
+	{
+		list = registry.byId("list_estates_change_region");
+		list.destroyDescendants();
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.get.estates",
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(fromview, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+				
+				var haveEstates = false;
+				array.forEach(data.estates, function(estate)
+				{
+					var childWidget = new dojox.mobile.ListItem({
+						id:"regionchangeestate_estate_"+estate.ID, 
+						clickable:true,
+						noArrow:true,
+						checked:activeRegionEstate==estate.ID,
+						label:estate.Name});
+					list.addChild(childWidget);
+					childWidget.on("click", function() { selectRegionChangeEstate(estate.ID, estate.Name);});
+					haveEstates = true;
+				});
+				
+				if(!haveEstates)
+				{
+					showErrorTextDialog("Please create an estate first.");
+				}
+				else
+				{
+				
+					new TransitionEvent(viewregiondetails, {
+						moveTo: "viewregionestatechangelist",
+						transition: "slide",
+						transitionDir: 1
+					}).dispatch();
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
 function initRegionDetails()
 {
 	require(["dojo/_base/array", "dijit/registry"], function(array, registry)
@@ -423,7 +555,7 @@ function initRegionDetails()
 			formWidget.addChild(listItem);
 		}
 		
-		childWidget = new dojox.mobile.RoundRectCategory({label:"Estate"});
+		childWidget = new dojox.mobile.RoundRectCategory({label:"Estate Information"});
 		view.addChild(childWidget);
 
 		var formWidget = new dojox.mobile.RoundRectList();
@@ -432,13 +564,16 @@ function initRegionDetails()
 		
 		if(containsAdminAll || array.indexOf(rights, "regions.manage")>=0)
 		{
-			listItem = new dojox.mobile.ListItem({id:"regiondetail_estate",label:"Name",clickable:true});
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_estate",label:"Estate",clickable:true});
 			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			listItem.on('click', function() { switchToRegionEstateChange(); });
 		}
 		else
 		{
-			listItem = new dojox.mobile.ListItem({id:"regiondetail_estate",label:"Name"});
+			listItem = new dojox.mobile.ListItem({id:"regiondetail_estate",label:"Estate"});
 			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
 		}
 	});
 }
@@ -532,6 +667,7 @@ function switchToRegionDetails(regionid)
 					return;
 				}
 
+				registry.byId("change_estate_region_header").set('label', "Select Estate for region " + data.region.Name)
 				registry.byId("regiondetail_nameinfo").set('label', "Region " + data.region.Name);
 				var fieldToUpdate = 'rightText';
 				if(containsAdminAll || array.indexOf(rights, "regions.manage")>=0)
@@ -540,6 +676,16 @@ function switchToRegionDetails(regionid)
 				}
 				registry.byId("regiondetail_owner").set(fieldToUpdate,data.region.Owner);
 				registry.byId("regiondetail_name").set(fieldToUpdate,data.region.Name);
+				
+				if(data.estate)
+				{
+					registry.byId("regiondetail_estate").set('rightText',data.estate.Name);
+					activeRegionEstate = data.estate.ID;
+				}
+				else
+				{
+					registry.byId("regiondetail_estate").set('rightText', '');
+				}
 				
 				if(containsAdminAll || array.indexOf(rights, "regions.control")>=0)
 				{
@@ -553,14 +699,6 @@ function switchToRegionDetails(regionid)
 				}
 				
 				selectedRegionID = regionid;
-				if(data.estate)
-				{
-					currentRegionEstate = data.estate.ID;
-					registry.byId("change_estate_region_header").set('label','Select Estate for Region '+data.region.Name);
-				}
-				
-				registry.byId("regiondetail_estate").set('rightText',data.region.Name);
-				
 				new TransitionEvent(viewregionslist, {
 					moveTo: "viewregiondetails",
 					transition: "slide",
@@ -573,85 +711,3 @@ function switchToRegionDetails(regionid)
 		);
 	});
 }
-
-/******************************************************************************/
-function switchToRegionChangeEstate()
-{
-	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
-		function(array, request, registry, TransitionEvent)
-	{
-		list = registry.byId("list_estates_change_region");
-		list.destroyDescendants();
-		request("/admin/json", 
-		{
-			method:"POST",
-			data: JSON.stringify(
-			{ 
-				"method":"region.get.estates",
-				"sessionid":sessionid
-			}),
-			headers:
-			{
-				"Content-Type":"application/json"
-			},
-			handleAs:"json"
-		}).then(
-			function(data) 
-			{
-				if(!data.success)
-				{
-					if(data.reason == 1)
-					{
-						new TransitionEvent(fromview, {
-							moveTo: "viewlogin",
-							transition: "slide",
-							transitionDir: -1
-						}).dispatch();
-					}
-					else
-					{
-						showErrorDialog(data.reason);
-					}
-					return;
-				}
-				
-				var haveEstates = false;
-				array.forEach(data.estates, function(estate)
-				{
-					var childWidget = new dojox.mobile.ListItem({
-						id:"region_change_estate_"+estate.ID, 
-						clickable:true,
-						noArrow:true,
-						checked:!haveEstates,
-						label:estate.Name});
-					list.addChild(childWidget);
-					childWidget.on("click", function() { selectRegionChangeEstate(estate.ID);});
-					if(!haveEstates)
-					{
-						selectedRegionAddEstate = estate.ID;
-					}
-					haveEstates = true;
-				});
-				
-				if(!haveEstates)
-				{
-					showErrorTextDialog("Please create an estate first.");
-				}
-				else
-				{
-					registry.byId('regionadd_autostart').set('value','on');
-				
-					new TransitionEvent(viewregionslist, {
-						moveTo: "viewregionadd",
-						transition: "slide",
-						transitionDir: 1
-					}).dispatch();
-				}
-			},
-			function(err) {
-				showErrorTextDialog(err.toString());
-			}
-		);
-	});
-}
-
