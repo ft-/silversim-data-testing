@@ -1,3 +1,6 @@
+// SilverSim is distributed under the terms of the
+// GNU Affero General Public License v3
+
 function send_command()
 {
 	require(["dojo/request", "dijit/registry"], function(request, registry)
