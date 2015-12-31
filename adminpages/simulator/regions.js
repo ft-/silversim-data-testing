@@ -832,6 +832,9 @@ function initRegionDetails()
 		
 		if(containsAdminAll ||array.indexOf(rights, "regions.manage")>=0)
 		{
+			childWidget = new dojox.mobile.RoundRectCategory({label:"Actions"});
+			view.addChild(childWidget);
+
 			var formWidget = new dojox.mobile.RoundRectList();
 			var listItem;
 			view.addChild(formWidget);
