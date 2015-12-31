@@ -86,7 +86,8 @@ function initAgentDetails()
 		
 		if(containsAdminAll || 
 			array.indexOf(rights, 'region.agents.kick')>=0 ||
-			array.indexOf(rights, 'region.agents.teleporthome')>=0)
+			array.indexOf(rights, 'region.agents.teleporthome')>=0 ||
+			array.indexOf(rights, 'region.agents.notice')>=0)
 		{
 			view.addChild(new dojox.mobile.RoundRectCategory({label:'Actions'}));
 			
@@ -97,13 +98,19 @@ function initAgentDetails()
 			{
 				var listItem = new dojox.mobile.ListItem({label:'Teleport Home',clickable:true});
 				childWidget.addChild(listItem);
-				listItem.on('click', function() { regionAgentTeleportHome(); });
+				listItem.on('click', function() { dijit.registry.byId('confirmagentteleporthomedialog').show(); });
 			}
 			if(array.indexOf(rights, 'region.agents.kick')>=0)
 			{
 				listItem = new dojox.mobile.ListItem({label:'Kick',clickable:true});
 				childWidget.addChild(listItem);
-				listItem.on('click', function() { regionAgentKick(); });
+				listItem.on('click', function() { dijit.registry.byId('confirmagentkickdialog').show(); });
+			}
+			if(array.indexOf(rights, 'region.agents.notice')>=0)
+			{
+				listItem = new dojox.mobile.ListItem({label:'Send Notice',clickable:true,arrowIcon:'mblDomButtonGrayKnob'});
+				childWidget.addChild(listItem);
+				listItem.on('click', function() { dijit.registry.byId('agentnoticedialog').show(); });
 			}
 		}
 	});
@@ -313,6 +320,57 @@ function regionAgentKick()
 			data: JSON.stringify(
 			{ 
 				"method":"region.agent.kick",
+				"id":selectedAgentListRegionID,
+				"agentid":selectedAgentInRegionID,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(fromview, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+				
+				switchToActualAgentList(-1, viewagent);
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function regionAgentNotice()
+{
+	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+		function(array, request, registry, TransitionEvent)
+	{
+		registry.byId('agentnoticedialog').hide();
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.agent.notice",
 				"id":selectedAgentListRegionID,
 				"agentid":selectedAgentInRegionID,
 				"sessionid":sessionid

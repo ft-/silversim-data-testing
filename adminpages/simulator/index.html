@@ -59,6 +59,24 @@
 	</div>
 
 	<!------------------------------------------------------------------------->
+	<div id="confirmagentkickdialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Do you really want to kick this agent?</div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="regionAgentKick()">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmagentkickdialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="confirmagentteleporthomedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Do you really want to teleport this agent home?</div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="regionAgentTeleportHome()">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmagentteleporthomedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
 	<div id="simulatornoticedialog" data-dojo-type="dojox/mobile/SimpleDialog">
 		<div class="mblSimpleDialogTitle">Send Simulator Notice</div>
 		<input data-dojo-type="dojox/mobile/TextBox" id="regions_notice_text" placeHolder="Enter Text" style="width: 200px;"/></li>
@@ -66,6 +84,16 @@
           style="width:100px;" onclick="sendRegionsNotice()">Send</button>
 		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
           style="width:100px;" onclick="dijit.registry.byId('simulatornoticedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="agentnoticedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Send Simulator Notice</div>
+		<input data-dojo-type="dojox/mobile/TextBox" id="agent_notice_text" placeHolder="Enter Text" style="width: 200px;"/></li>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="sendAgentNotice()">Send</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('agentnoticedialog').hide()">Cancel</button>
 	</div>
 
 	<!------------------------------------------------------------------------->
