@@ -379,6 +379,7 @@ function regionAgentNotice()
 				"method":"region.agent.notice",
 				"id":selectedAgentListRegionID,
 				"agentid":selectedAgentInRegionID,
+				"message":registry.byId('agent_notice_text').get('value'),
 				"sessionid":sessionid
 			}),
 			headers:
