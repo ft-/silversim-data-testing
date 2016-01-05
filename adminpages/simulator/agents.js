@@ -406,8 +406,6 @@ function regionAgentNotice()
 					}
 					return;
 				}
-				
-				switchToActualAgentList(-1, viewagent);
 			},
 			function(err) {
 				showErrorTextDialog(err.toString());
