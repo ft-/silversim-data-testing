@@ -268,6 +268,7 @@ function regionAgentTeleportHome()
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
+		registry.byId('confirmagentteleporthomedialog').hide();
 		request("/admin/json", 
 		{
 			method:"POST",
@@ -318,6 +319,7 @@ function regionAgentKick()
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
+		registry.byId('confirmagentkickdialog').hide();
 		request("/admin/json", 
 		{
 			method:"POST",
