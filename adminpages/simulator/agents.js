@@ -65,6 +65,7 @@ function switchToAgentRegionsList(transitionDirection, fromview)
 }
 
 var selectedAgentListRegionID;
+var selectedAgentListRegionName;
 
 /******************************************************************************/
 function initAgentDetails()
@@ -97,21 +98,21 @@ function initAgentDetails()
 			childWidget = new dojox.mobile.RoundRectList();
 			view.addChild(childWidget);
 			
-			if(array.indexOf(rights, 'region.agents.teleporthome')>=0)
+			if(containsAdminAll || array.indexOf(rights, 'region.agents.teleporthome')>=0)
 			{
 				var listItem = new dojox.mobile.ListItem({label:'Teleport Home',clickable:true});
 				childWidget.addChild(listItem);
 				listItem.on('click', function() { dijit.registry.byId('confirmagentteleporthomedialog').show(); });
 			}
-			if(array.indexOf(rights, 'region.agents.kick')>=0)
+			if(containsAdminAll || array.indexOf(rights, 'region.agents.kick')>=0)
 			{
-				listItem = new dojox.mobile.ListItem({label:'Kick',clickable:true});
+				var listItem = new dojox.mobile.ListItem({label:'Kick',clickable:true});
 				childWidget.addChild(listItem);
 				listItem.on('click', function() { dijit.registry.byId('confirmagentkickdialog').show(); });
 			}
-			if(array.indexOf(rights, 'region.agents.notice')>=0)
+			if(containsAdminAll || array.indexOf(rights, 'region.agents.notice')>=0)
 			{
-				listItem = new dojox.mobile.ListItem({label:'Send Notice',clickable:true,arrowIcon:'mblDomButtonGrayKnob'});
+				var listItem = new dojox.mobile.ListItem({label:'Send Notice',clickable:true,arrowIcon:'mblDomButtonGrayKnob'});
 				childWidget.addChild(listItem);
 				listItem.on('click', function() { dijit.registry.byId('agentnoticedialog').show(); });
 			}
@@ -123,6 +124,7 @@ function initAgentDetails()
 function switchToAgentList(regionid, regionname)
 {
 	selectedAgentListRegionID = regionid;
+	selectedAgentListRegionName = regionname;
 	require(["dijit/registry"], function(registry)
 	{
 		registry.byId('agentlist_header').set('label', "Agents on Region " + regionname);
@@ -205,8 +207,6 @@ function switchToAgentDetails(agentID)
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
-		list = registry.byId("list_agent_regions");
-		list.destroyDescendants();
 		request("/admin/json", 
 		{
 			method:"POST",
@@ -242,16 +242,17 @@ function switchToAgentDetails(agentID)
 					return;
 				}
 				
+				registry.byId('agentdetails_header').set('label', "Agent " + data.agent.FullName + " on " + selectedAgentListRegionName);
 				registry.byId('agentdetails_id').set('rightText', data.agent.ID);
 				registry.byId('agentdetails_fullname').set('rightText', data.agent.FullName);
 				registry.byId('agentdetails_firstname').set('rightText', data.agent.FirstName);
 				registry.byId('agentdetails_lastname').set('rightText', data.agent.LastName);
 				registry.byId('agentdetails_homeuri').set('rightText', data.agent.HomeURI);
 				
-				new TransitionEvent(fromview, {
+				new TransitionEvent(viewagentlist, {
 					moveTo: "viewagent",
 					transition: "slide",
-					transitionDir: transitionDirection
+					transitionDir: 1
 				}).dispatch();
 			},
 			function(err) {
