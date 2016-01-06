@@ -45,9 +45,13 @@ function switchToAgentRegionsList(transitionDirection, fromview)
 				array.forEach(data.regions, function(region)
 				{
 					var childWidget = new dojox.mobile.ListItem({
-						clickable:true,
+						clickable:region.IsOnline,
 						label:region.Name});
 					list.addChild(childWidget);
+					if(!region.IsOnline)
+					{
+						childWidget.set('rightText','Offline');
+					}
 					childWidget.on("click", function() { switchToAgentList(region.ID, region.Name); });
 				});
 				
