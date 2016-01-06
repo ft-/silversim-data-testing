@@ -1058,33 +1058,23 @@ function switchToRegionDetails(regionid)
 				registry.byId("regiondetail_productname").set(fieldToUpdate,data.region.ProductName);
 				switch(data.region.Access)
 				{
-					case "trial": 
-						registry.byId("regiondetail_access").set('rightText','Trial');
-						registry.byId("list_access_change_region_adult").set('checked',false);
-						registry.byId("list_access_change_region_mature").set('checked',false);
-						registry.byId("list_access_change_region_pg").set('checked',false);
-						registry.byId("list_access_change_region_trial").set('checked',true);
-						break;
 					case "pg": 
 						registry.byId("regiondetail_access").set('rightText','PG');
 						registry.byId("list_access_change_region_adult").set('checked',false);
 						registry.byId("list_access_change_region_mature").set('checked',false);
 						registry.byId("list_access_change_region_pg").set('checked',true);
-						registry.byId("list_access_change_region_trial").set('checked',false);
 						break;
 					case "mature": 
 						registry.byId("regiondetail_access").set('rightText','Mature');
 						registry.byId("list_access_change_region_adult").set('checked',false);
 						registry.byId("list_access_change_region_mature").set('checked',true);
 						registry.byId("list_access_change_region_pg").set('checked',false);
-						registry.byId("list_access_change_region_trial").set('checked',false);
 						break;
 					case "adult": 
 						registry.byId("regiondetail_access").set('rightText','Adult');
 						registry.byId("list_access_change_region_adult").set('checked',true);
 						registry.byId("list_access_change_region_mature").set('checked',false);
 						registry.byId("list_access_change_region_pg").set('checked',false);
-						registry.byId("list_access_change_region_trial").set('checked',false);
 						break;
 					default:
 						registry.byId("regiondetail_access").set('rightText','Unknown');
