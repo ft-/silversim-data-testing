@@ -654,15 +654,26 @@ function initRegionDetails()
 			if(containsAdminAll || array.indexOf(rights, "regions.control")>=0)
 			{
 				listItem = new dojox.mobile.ListItem({
+					label:"Trigger Restart",
+					clickable:true,
+                    arrowClass:'mblDomButtonSilverCircleOrangeButton'});
+				formWidget.addChild(listItem);
+				listItem.on("click", function(val) { if(selectedRegionID) dijit.registry.byId('confirmregionrestartdialog').show();});
+
+				listItem = new dojox.mobile.ListItem({
+					label:"Cancel Restart",
+					clickable:true,
+                    arrowClass:'mblDomButtonSilverCircleGrayButton'});
+				formWidget.addChild(listItem);
+				listItem.on("click", function(val) { if(selectedRegionID) cancelRestartRegion(selectedRegionID);});
+			
+				listItem = new dojox.mobile.ListItem({
 					label:"Running"});
 				formWidget.addChild(listItem);
 				var sw = new dojox.mobile.Switch({id:"regiondetail_running"});
 				listItem.addChild(sw);
 				sw.on("stateChanged", function(val) { if(selectedRegionID) startStopRegion(selectedRegionID, val);});
-			}
 			
-			if(containsAdminAll || array.indexOf(rights, "regions.control")>=0)
-			{
 				listItem = new dojox.mobile.ListItem({
 					label:"Auto-Start"});
 				formWidget.addChild(listItem);
@@ -888,6 +899,101 @@ function deleteRegion()
 					return;
 				}
 				switchToRegionsList(-1, viewregiondetails);
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function restartRegion(regionid)
+{
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		registry.byId('confirmregionrestartdialog').hide();
+        var seconds = parseInt(registry.byId('region_restart_time').get('value'));
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.restart",
+				"id":regionid,
+				"seconds":seconds,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewregiondetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function cancelRestartRegion(regionid)
+{
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"region.restart.abort",
+				"id":regionid,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewregiondetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
 			},
 			function(err) {
 				showErrorTextDialog(err.toString());
