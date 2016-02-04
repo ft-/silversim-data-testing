@@ -22,3 +22,6 @@
 
 [OptionalModules]
 	Include-OptionalModules = "SilverSim.OptionalModules.ini"
+
+[WebIF]
+	Enabled = yes
