@@ -18,6 +18,7 @@ require([
 	"dijit/registry",
 	"dojo/domReady!",
 	"dojox/mobile/View",
+	"dojox/mobile/ScrollableView",
 	"dojox/mobile/Button",
 	"dojox/mobile/Heading",
 	"dojox/mobile/RoundRectList",
