@@ -6,19 +6,22 @@
 [DatabaseService]
 	Type=MySQL
 	Server=localhost
-	Database=silversim
-	Username=silversim
-	Password=silversim
+	Database=simdb
+	Username=simdb
+	Password=simdb
 
 [Network]
-	HttpListenerPort = 9000
 	ExternalHostName = "sim.example.com"
+
+[HTTP]
+	Port = 9000
 	
 [RobustGrid-hg.example.com]
 	HomeURI = "http://hg.example.com:8002/"
 	AssetServerURI = "http://grid.example.com:8003"
 	InventoryServerURI = "http://grid.example.com:8003"
 	PresenceServerURI = "http://grid.example.com:8003"
+	FriendsServerURI = "http://grid.example.com:8003"
 
 [OptionalModules]
 	Include-OptionalModules = "SilverSim.OptionalModules.ini"
