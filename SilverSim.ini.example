@@ -23,8 +23,5 @@
 	PresenceServerURI = "http://grid.example.com:8003"
 	FriendsServerURI = "http://grid.example.com:8003"
 
-[OptionalModules]
-	Include-OptionalModules = "SilverSim.OptionalModules.ini"
-
 [WebIF]
 	Enabled = yes

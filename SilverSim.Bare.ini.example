@@ -13,6 +13,3 @@
 
 [HTTP]
 	Port = 9000
-
-[OptionalModules]
-	Include-OptionalModules = "SilverSim.OptionalModules.ini"

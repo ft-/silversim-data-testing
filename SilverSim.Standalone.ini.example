@@ -17,8 +17,5 @@
 [HTTPS]
 	Port = 9001
 
-[OptionalModules]
-	Include-OptionalModules = "SilverSim.OptionalModules.ini"
-
 [DefaultSceneImplementation]
 ;	GroupsNameService = 

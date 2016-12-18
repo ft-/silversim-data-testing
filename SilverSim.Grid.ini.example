@@ -13,8 +13,5 @@
 [Network]
 	ExternalHostName = "example.com"
 
-[OptionalModules]
-	Include-OptionalModules = "SilverSim.Grid.OptionalModules.ini"
-
 [HTTP]
 	ListenerPort = 8002
