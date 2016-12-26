@@ -73,7 +73,7 @@ function processLogin(e)
 								array.indexOf(login_data.rights, "regions.notice")>=0 ||
 								array.indexOf(login_data.rights, "modules.view")>=0)
 							{
-								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Grid"}));
+								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Simulator - Standalone Mode"}));
 								var list = new dojox.mobile.RoundRectList();
 								mainview.addChild(list);
 							
@@ -101,6 +101,83 @@ function processLogin(e)
 										childWidget.on("click", switchToModulesList);
 								}
 								
+								if(containsAdminAll || array.indexOf(login_data.rights, "regions.notice")>=0)
+								{
+									var listItem;
+									listItem = new dojox.mobile.ListItem({
+											label:'Send Simulator Notice',
+											onclick:"dijit.registry.byId('simulatornoticedialog').show()",
+											clickable:true,
+											arrowClass:'mblDomButtonGrayKnob'});
+									list.addChild(listItem);
+								}
+							}
+							
+							
+							if(containsAdminAll || array.indexOf(login_data.rights, "estates.view")>=0)
+							{
+								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Estates"}));
+								var list = new dojox.mobile.RoundRectList();
+								mainview.addChild(list);
+								childWidget = new dojox.mobile.ListItem({
+									clickable:true,
+									label:"List"});
+								list.addChild(childWidget);
+								childWidget.on("click", function() {switchToEstatesList(1,viewmain); });
+							}
+							
+							if(containsAdminAll ||
+								array.indexOf(login_data.rights, "regions.control")>=0 ||
+								array.indexOf(login_data.rights, "regions.manage") >= 0 ||
+								array.indexOf(login_data.rights, "regions.logincontrol")>=0 ||
+								array.indexOf(login_data.rights, "regions.notice")>=0 ||
+								array.indexOf(login_data.rights, "regions.agents.view")>=0)
+							{
+								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Regions"}));
+								var list = new dojox.mobile.RoundRectList();
+								mainview.addChild(list);
+								
+								childWidget = new dojox.mobile.ListItem({
+									clickable:true,
+									label:"List"});
+								list.addChild(childWidget);
+								childWidget.on("click", function() { switchToRegionsList(1, viewmain); });
+								
+								if(containsAdminAll || array.indexOf(login_data.rights, "regions.control")>=0)
+								{
+									childWidget = new dojox.mobile.ListItem({
+										clickable:true,
+										label:"Start/Stop"});
+									list.addChild(childWidget);
+									childWidget.on("click", switchToRegionControl);
+								}
+								
+								if(containsAdminAll || array.indexOf(login_data.rights, "regions.manage")>=0)
+								{
+									childWidget = new dojox.mobile.ListItem({
+										clickable:true,
+										label:"Auto-Start Enable"});
+									list.addChild(childWidget);
+									childWidget.on("click", switchToRegionEnable);
+								}
+								
+								if(containsAdminAll || array.indexOf(login_data.rights, "regions.logincontrol")>=0)
+								{
+									childWidget = new dojox.mobile.ListItem({
+										clickable:true,
+										label:"Login Enable"});
+									list.addChild(childWidget);
+									childWidget.on("click", switchToLoginControl);
+								}
+								
+								if(containsAdminAll ||array.indexOf(login_data.rights, "regions.agents.view")>=0)
+								{
+									childWidget = new dojox.mobile.ListItem({
+										clickable:true,
+										label:"Agents List per Region"});
+									list.addChild(childWidget);
+									childWidget.on("click", function() { switchToAgentRegionsList(1, viewmain);});
+								}
 							}
 							
 							if(containsAdminAll || array.indexOf(login_data.rights, "console.access")>=0)
@@ -116,6 +193,10 @@ function processLogin(e)
 									transition:"slide"});
 								list.addChild(childWidget);
 							}
+							
+							initEstateDetails();
+							initRegionDetails();
+							initAgentDetails();
 							
 							new TransitionEvent(viewlogin, {
 								moveTo: "viewmain",

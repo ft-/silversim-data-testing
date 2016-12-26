@@ -2,6 +2,49 @@
 // GNU Affero General Public License v3
 
 /******************************************************************************/
+function sendRegionsNotice()
+{
+	require(["dijit/registry", "dojo/request"], function(registry, request)
+	{
+		registry.byId('simulatornoticedialog').hide();
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"regions.notice",
+				"message":registry.byId('regions_notice_text').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(viewmain, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+						return;
+					}
+					showErrorDialog(data.reason);
+				}
+			},
+			function(err) {
+			}
+		);
+	});
+}
+
+/******************************************************************************/
 function switchToRegionsList(transitionDirection, fromview)
 {
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
