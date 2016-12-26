@@ -58,12 +58,12 @@
 
 	<!------------------------------------------------------------------------->
 	<div id="viewaccountadd" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'New Region'">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'New Account'">
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
-						data-dojo-props="onClick: function(e){ switchToRegionsList(-1,viewestateadd); }, arrow: 'left', label: 'Abort'" style="float:left"></div>
+						data-dojo-props="arrow: 'left', label: 'Abort', moveTo:'viewmain', transition:'slide', transitionDir:'-1'" style="float:left"></div>
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
 						data-dojo-props="icon: 'mblDomButtonWhitePlus',
-						                 onClick: function(){ addRegionData(); }"
+						                 onClick: function(){ addAccountData(); }"
 						style="float:right;"></div>
 				</h1>
 		<div id="accountadd_subview" data-dojo-type="dojox/mobile/ScrollableView">
@@ -81,22 +81,19 @@
 				<li data-dojo-type="dojox/mobile/ListItem">
 					<input data-dojo-type="dojox/mobile/TextBox" id="accountadd_usertitle" placeHolder="Title" style="width: 200px;"/></li>
 				</li>
-			</ul>
-		</div>
-	</div>
-
-	<!------------------------------------------------------------------------->
-	<div id="viewaccountsdash" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Accounts Dashboard</h1>
-		<div data-dojo-type="dojox/mobile/ScrollableView">
-			<ul id="accountsdash" data-dojo-type="dojox/mobile/RoundRectList">
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input type="password" data-dojo-type="dojox/mobile/TextBox" id="accountadd_password" placeHolder="Password" style="width: 200px;"/></li>
+				</li>
+				<li data-dojo-type="dojox/mobile/ListItem">
+					<input type="password" data-dojo-type="dojox/mobile/TextBox" id="accountadd_password2" placeHolder="Password again" style="width: 200px;"/></li>
+				</li>
 			</ul>
 		</div>
 	</div>
 
 	<!------------------------------------------------------------------------->
 	<div id="viewaccounts" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Accounts</h1>
+		<h1 id="accounts_header" data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Accounts</h1>
 		<div data-dojo-type="dojox/mobile/ScrollableView">
 			<ul id="list_accounts" data-dojo-type="dojox/mobile/RoundRectList">
 			</ul>
@@ -104,9 +101,12 @@
 	</div>
 
 	<!------------------------------------------------------------------------->
-	<div id="viewaccount" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Account</h1>
-		<div data-dojo-type="dojox/mobile/ScrollableView">
+	<div id="viewaccountdetails" data-dojo-type="dojox/mobile/View">
+		<h1 id="accountdetail_nameinfo" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Account'">
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToAccounts(-1, viewaccountdetails); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+				</h1>
+		<div id="view_accountdetails" data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
 	</div>
 

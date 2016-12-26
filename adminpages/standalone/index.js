@@ -113,6 +113,30 @@ function processLogin(e)
 								}
 							}
 							
+							if(containsAdminAll || array.indexOf(login_data.rights, "useraccounts.view")>=0 ||
+								array.indexOf(login_data.rights, "useraccounts.create") >= 0 ||
+								array.indexOf(login_data.rights, "useraccounts.delete") >= 0 ||
+								array.indexOf(login_data.rights, "useraccounts.manage") >= 0)
+							{
+								mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Accounts"}));
+								var list = new dojox.mobile.RoundRectList();
+								mainview.addChild(list);
+								
+								if(containsAdminAll || array.indexOf(login_data.rights, "useraccounts.create")>=0)
+								{
+									childWidget = new dojox.mobile.ListItem({
+										clickable:true,
+										label:"Add Account",
+										moveTo:"viewaccountadd",
+										transition:"slide"});
+									list.addChild(childWidget);
+								}
+								childWidget = new dojox.mobile.ListItem({
+									clickable:true,
+									label:">>"});
+								childWidget.on("click", function() { switchToAccounts(1, viewmain); });
+								list.addChild(childWidget);
+							}
 							
 							if(containsAdminAll || array.indexOf(login_data.rights, "estates.view")>=0)
 							{
@@ -197,6 +221,7 @@ function processLogin(e)
 							initEstateDetails();
 							initRegionDetails();
 							initAgentDetails();
+							initAccountDetails();
 							
 							new TransitionEvent(viewlogin, {
 								moveTo: "viewmain",
