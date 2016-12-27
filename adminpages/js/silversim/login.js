@@ -128,7 +128,7 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 		have_regions_notice ||
 		array.indexOf(login_data.rights, "modules.view")>=0)
 	{
-		mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Simulator"}));
+		mainview.addChild(new dojox.mobile.RoundRectCategory({label:modules_data.title}));
 		var list = new dojox.mobile.RoundRectList();
 		mainview.addChild(list);
 	
