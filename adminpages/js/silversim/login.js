@@ -117,11 +117,13 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 	mainview.destroyDescendants();
 	
 	rights = login_data.rights;
+	modules = modules_data.modules;
 	containsAdminAll = array.indexOf(login_data.rights, "admin.all") >= 0;
 	var childWidget;
 	var sectionWidget;
 	
 	var have_regions_notice = (containsAdminAll || array.indexOf(login_data.rights, "regions.notice")>=0) && array.indexOf(modules_data.modules, "regions")>=0;
+	var have_npc_view = (containsAdminAll || array.indexOf(login_data.rights, "npcs.view")>=0) && array.indexOf(modules_data.modules, "npcs")>=0;
 	
 	if( containsAdminAll ||
 		(array.indexOf(login_data.rights, "issues.view")>=0 && login_data.numissues != 0) ||
@@ -218,7 +220,8 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 			array.indexOf(login_data.rights, "regions.manage") >= 0 ||
 			array.indexOf(login_data.rights, "regions.logincontrol")>=0 ||
 			array.indexOf(login_data.rights, "regions.notice")>=0 ||
-			array.indexOf(login_data.rights, "regions.agents.view")>=0)
+			array.indexOf(login_data.rights, "regions.agents.view")>=0 ||
+			have_npc_view)
 		{
 			mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Regions"}));
 			var list = new dojox.mobile.RoundRectList();
@@ -265,6 +268,15 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 				list.addChild(childWidget);
 				childWidget.on("click", function() { switchToAgentRegionsList(1, viewmain);});
 			}
+			
+			if(have_npc_view)
+			{
+				childWidget = new dojox.mobile.ListItem({
+					clickable:true,
+					label:"Npc List per Region"});
+				list.addChild(childWidget);
+				childWidget.on("click", function() { switchToNpcRegionsList(1, viewmain);});
+			}
 		}
 	}
 	
@@ -289,6 +301,7 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 	initRegionDetails();
 	initAgentDetails();
 	initAccountDetails();
+	initNpcDetails();
 	
 	new TransitionEvent(viewlogin, {
 		moveTo: "viewmain",

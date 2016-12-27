@@ -22,6 +22,7 @@
 	<script src="/admin/js/silversim/agents.js"></script>
 	<script src="/admin/js/silversim/modules.js"></script>
 	<script src="/admin/js/silversim/accounts.js"></script>
+	<script src="/admin/js/silversim/npcs.js"></script>
 </head>
 <body style="visibility:hidden;">
 	<div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
@@ -262,6 +263,15 @@
 	</div>
 
 	<!------------------------------------------------------------------------->
+	<div id="viewnpc_regionslist" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Select region for viewing npcs</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_npc_regions" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
 	<div id="viewagentlist" data-dojo-type="dojox/mobile/View">
 		<h1 id="agentlist_header" data-dojo-type="dojox/mobile/Heading">Agents on Region
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
@@ -270,6 +280,19 @@
 		<h2 data-dojo-type="dojox/mobile/RoundRectCategory">Agents</h2>
 		<div data-dojo-type="dojox/mobile/ScrollableView">
 			<ul id="list_agents_in_region" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewnpclist" data-dojo-type="dojox/mobile/View">
+		<h1 id="npclist_header" data-dojo-type="dojox/mobile/Heading">NPCs on Region
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToNpcRegionsList(-1, viewagentlist); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+		</h1>
+		<h2 data-dojo-type="dojox/mobile/RoundRectCategory">NPCs</h2>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_npcs_in_region" data-dojo-type="dojox/mobile/RoundRectList">
 			</ul>
 		</div>
 	</div>
@@ -388,12 +411,31 @@
 	</div>
 
 	<!------------------------------------------------------------------------->
+	<div id="confirmnpcremovedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Do you really want to remove this npc?</div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="removeNpc()">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmnpcremovedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
 	<div id="viewaccountdetails" data-dojo-type="dojox/mobile/View">
 		<h1 id="accountdetail_nameinfo" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Account'">
 		<div data-dojo-type="dojox/mobile/ToolBarButton" 
 						data-dojo-props="onClick: function(e){ switchToAccounts(-1, viewaccountdetails); }, arrow: 'left', label: 'Back'" style="float:left"></div>
 				</h1>
 		<div id="view_accountdetails" data-dojo-type="dojox/mobile/ScrollableView">
+		</div>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="viewnpcdetails" data-dojo-type="dojox/mobile/View">
+		<h1 id="npcdetail_nameinfo" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Account'">
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchToRegionsList(-1, viewnpcdetails); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+				</h1>
+		<div id="view_npcdetails" data-dojo-type="dojox/mobile/ScrollableView">
 		</div>
 	</div>
 

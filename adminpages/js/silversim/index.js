@@ -9,6 +9,7 @@ dojoConfig = {
 
 var sessionid = "";
 var rights;
+var modules;
 var containsAdminAll;
 
 require([
