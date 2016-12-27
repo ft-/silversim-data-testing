@@ -125,6 +125,14 @@ function initAccountDetails()
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
 
+			childWidget = new dojox.mobile.Button({label:'Change'});
+			listItem = new dojox.mobile.ListItem({});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			childWidget.on("click", function() { updateAccountUserLevelData(); });
+			
 			childWidget = new dojox.mobile.TextBox({id:"accountdetail_usertitle", style: 'width: 200px;'});
 			listItem = new dojox.mobile.ListItem({label:"User Title"});
 			formWidget.addChild(listItem);
@@ -138,14 +146,30 @@ function initAccountDetails()
 			listItem.set('rightText', '');
 			childWidget.placeAt(listItem.rightTextNode);
 			childWidget.startup();
-			childWidget.on("click", function() { updateAccountData(); });
+			childWidget.on("click", function() { updateAccountUserTitleData(); });
 			
+			childWidget = new dojox.mobile.TextBox({id:"accountdetail_email", style: 'width: 200px;'});
+			listItem = new dojox.mobile.ListItem({label:"Email"});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+
+			childWidget = new dojox.mobile.Button({label:'Change'});
+			listItem = new dojox.mobile.ListItem({});
+			formWidget.addChild(listItem);
+			listItem.set('rightText', '');
+			childWidget.placeAt(listItem.rightTextNode);
+			childWidget.startup();
+			childWidget.on("click", function() { updateAccountEmailData(); });
 		}
 		else
 		{
 			listItem = new dojox.mobile.ListItem({id:"accountdetail_userlevel",label:"User Level"});
 			formWidget.addChild(listItem);
 			listItem = new dojox.mobile.ListItem({id:"accountdetail_usertitle",label:"User Title"});
+			formWidget.addChild(listItem);
+			listItem = new dojox.mobile.ListItem({id:"accountdetail_email",label:"Email"});
 			formWidget.addChild(listItem);
 		}
 
@@ -219,6 +243,7 @@ function switchToAccountDetails(accountid)
 				registry.byId("accountdetail_lastname").set('rightText',data.account.lastname);
 				registry.byId("accountdetail_userlevel").set(fieldToUpdate,data.account.userlevel);
 				registry.byId("accountdetail_usertitle").set(fieldToUpdate,data.account.usertitle);
+				registry.byId("accountdetail_email").set(fieldToUpdate,data.account.email);
 				
 				selectedaccountid = accountid;
 				new TransitionEvent(viewaccounts, {
@@ -235,9 +260,144 @@ function switchToAccountDetails(accountid)
 }
 
 /******************************************************************************/
-function updateAccountData()
+function updateAccountUserLevelData()
 {
-	
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"useraccount.change",
+				"id":selectedaccountid,
+				"userlevel":registry.byId('accountdetail_userlevel').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewaccountdetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function updateAccountUserTitleData()
+{
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"useraccount.change",
+				"id":selectedaccountid,
+				"usertitle":registry.byId('accountdetail_usertitle').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewaccountdetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
+}
+
+/******************************************************************************/
+function updateAccountEmailData()
+{
+	require(["dijit/registry", "dojo/request", "dojo/json"], function(registry, request)
+	{
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"useraccount.change",
+				"id":selectedaccountid,
+				"email":registry.byId('accountdetail_email').get('value'),
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new dojox.mobile.TransitionEvent(viewaccountdetails, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
 }
 
 /******************************************************************************/
