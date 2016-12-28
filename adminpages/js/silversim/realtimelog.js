@@ -9,7 +9,7 @@ function clearRealtimeLog()
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
-		registry.byId('log_output').set('innerHTML', 'Cleared');
+		registry.byId('log_output').set('innerHTML', 'Cleared\n');
 	});
 }
 
