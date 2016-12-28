@@ -23,6 +23,7 @@
 	<script src="/admin/js/silversim/modules.js"></script>
 	<script src="/admin/js/silversim/accounts.js"></script>
 	<script src="/admin/js/silversim/npcs.js"></script>
+	<script src="/admin/js/silversim/realtimelog.js"></script>
 </head>
 <body style="visibility:hidden;">
 	<div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
@@ -489,6 +490,20 @@
 		<button id="command_send" data-dojo-type="dojox/mobile/Button" onClick="send_command()">Send</button>
 		<br/>
 		<div id="command_output" data-dojo-type="dojox/mobile/Pane" style="background-color: black; color: lightgray;"></div>
+		</div>
+	</div>
+	<!------------------------------------------------------------------------->
+	<div id="viewlog" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Real-Time Log Display'">
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="onClick: function(e){ switchFromLogToMainView(); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+		<div data-dojo-type="dojox/mobile/ToolBarButton" 
+						data-dojo-props="label:'Clear',
+						                 onClick: function(){ clearRealtimeLog(); }"
+						style="float:right;"></div>
+		</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+		<div id="log_output" data-dojo-type="dojox/mobile/Pane" style="background-color: black; color: lightgray;"></div>
 		</div>
 	</div>
 </body>

@@ -296,12 +296,26 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 			list.addChild(childWidget);
 		}
 	}
+
+	if(containsAdminAll || array.indexOf(login_data.rights, "log.view")>=0)
+	{
+		mainview.addChild(new dojox.mobile.RoundRectCategory({label:"Log"}));
+		var list = new dojox.mobile.RoundRectList();
+		mainview.addChild(list);
+		
+		childWidget = new dojox.mobile.ListItem({
+			clickable:true,
+			label:"Real-Time Display"});
+		list.addChild(childWidget);
+		childWidget.on("click", function() {switchToRealtimeLog(); });
+	}
 	
 	initEstateDetails();
 	initRegionDetails();
 	initAgentDetails();
 	initAccountDetails();
 	initNpcDetails();
+	initRealTimeLog();
 	
 	new TransitionEvent(viewlogin, {
 		moveTo: "viewmain",
