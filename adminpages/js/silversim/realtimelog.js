@@ -9,7 +9,7 @@ function clearRealtimeLog()
 	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
 		function(array, request, registry, TransitionEvent)
 	{
-		registry.byId('log_output').set('innerHTML', '<pre>Cleared</pre>');
+		registry.byId('log_output').set('innerHTML', 'Cleared');
 	});
 }
 
@@ -33,7 +33,7 @@ function switchToRealtimeLog()
 			{
 				oldtext = registry.byId("log_output").get('innerHTML');
 			}
-			registry.byId("log_output").set('innerHTML', oldtext + "<pre>"+response+"</pre>");
+			registry.byId("log_output").set('innerHTML', oldtext + response + "\n");
 		});
 		new TransitionEvent(viewmain, {
 			moveTo: "viewlog",
