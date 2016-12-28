@@ -20,7 +20,7 @@ function switchToRealtimeLog()
 		function(array, request, registry, TransitionEvent, Socket)
 	{
 		registry.byId("log_output").set('innerHTML', '');
-		logsocket = new Socket("/admin/log/" + sessionid);
+		logsocket = new Socket("/admin/loghtml/" + sessionid);
 		logsocket.on("message", function(ev) 
 		{
 			var response = ev.data;
