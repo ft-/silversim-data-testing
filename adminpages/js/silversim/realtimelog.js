@@ -10,6 +10,7 @@ function clearRealtimeLog()
 		function(array, request, registry, TransitionEvent)
 	{
 		registry.byId('log_output').set('innerHTML', 'Cleared\n');
+		registry.byId('log_scroll').scrollTo({x:0 ,y: 0});
 	});
 }
 
@@ -20,6 +21,7 @@ function switchToRealtimeLog()
 		function(array, request, registry, TransitionEvent, Socket)
 	{
 		registry.byId("log_output").set('innerHTML', '');
+		registry.byId('log_scroll').scrollTo({x:0 ,y: 0});
 		logsocket = new Socket("/admin/loghtml/" + sessionid);
 		logsocket.on("message", function(ev) 
 		{
