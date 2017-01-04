@@ -6,9 +6,9 @@
 [DatabaseService]
 	Type=MySQL
 	Server=localhost
-	Database=silversimgrid
-	Username=silversimgrid
-	Password=silversimgrid
+	Database=griddb
+	Username=griddb
+	Password=griddb
 
 [Network]
 	ExternalHostName = "example.com"

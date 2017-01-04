@@ -4,9 +4,9 @@
 [DatabaseService]
 	Type=MySQL
 	Server=127.0.0.1
-	Database=silversimstandalone
-	Username=silversim
-	Password=silversim
+	Database=standalonedb
+	Username=standalonedb
+	Password=standalonedb
 
 [Network]
 	ExternalHostName = "standalone.example.com"
@@ -16,6 +16,3 @@
 
 [HTTPS]
 	Port = 9001
-
-[DefaultSceneImplementation]
-;	GroupsNameService = 

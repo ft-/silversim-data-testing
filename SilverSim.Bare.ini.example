@@ -4,9 +4,9 @@
 [DatabaseService]
 	Type=MySQL
 	Server=127.0.0.1
-	Database=silversimbare
-	Username=silversim
-	Password=silversim
+	Database=baresimdb
+	Username=baresimdb
+	Password=baresimdb
 
 [Network]
 	ExternalHostName = "example.com"
