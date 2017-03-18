@@ -2,3 +2,6 @@
 *.example
 *.log
 *.p12
+dl-cache
+SilverSim.gridinfo.*
+dumps
