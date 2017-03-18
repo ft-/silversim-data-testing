@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"Reconnect.js",
+"lineCount":3,
+"mappings":"A;AAAAA,MAAA,yDAGG,QAAA,CAASC,CAAT,CAAmBC,CAAnB,EAEFD,CAAAE,UAFE,CAEmBC,QAAAA,CAASC,CAATD,CAAiBE,CAAjBF,EAapBE,CAboBF,CAaVE,CAbUF,SAehBG,EAAgBD,CAAAC,cAAhBA,KAfgBH,CAgBhBI,EAAcF,CAAAE,YAAdA,GAhBgBJ,CAiBhBK,EAAUF,CAjBMH,CAkBhBM,CAlBgBN,CAkBFO,CAElBT,EAAAU,MAAA,CAAaP,CAAb,WAAgC,QAAA,CAASQ,CAAT,EAC/BC,YAAA,CAAaJ,CAAb,CACIG,EAAAE,SAF2B,EAG9BV,CAAAW,aAAA,CAAoB,QAAA,GACnBf,CAAAgB,QAAA,CAAiBZ,CAAjB,CAAyBM,CAAzB,CAAqCN,CAAAa,UAAA,EAArC,CADmB,CAApB,CAH8B,CAAhC,IAQIb,EAAAW,aA5BgBZ,GA8BnBC,CAAAW,aA9BmBZ,CA8BGe,QAAAA,CAASD,CAATC,EACrBC,UAAA,CAAW,QAAA,GACVF,CAAA,EACAR,EAFU,CAEKU,UAAA,CAAW,QAAA,KAEtBT,CAAAU,WAFsB,GAGxBZ,CAHwB,CAGdF,CAHc,EAAX,CAKZA,CALY,CAFL,CAAX,CAQGE,CARH,CAUAA,EAXqBU,EAWVX,CAXUW,CA9BHf,CA4ChBC,EAAAa,UA5CgBd,GA8CnBC,CAAAa,UA9CmBd,CA8CAkB,QAAAA,SACXjB,EAAAkB,KADWD,CAEjBrB,CAAAuB,SAAA,CAAkBnB,CAAAkB,KAAlB,CAFiBD,CAGjBrB,CAAAwB,UAAA,MAAyBpB,CAAAqB,IAAzB;AAAuCrB,CAAAsB,IAAvC,EAHiBL,CA9CAlB,QAoDbC,EApDaD,CAFnB,OAyDKH,EAAAE,UAzDL,CAHH;",
+"sources":["Reconnect.js.uncompressed.js"],
+"names":["define","dxSocket","aspect","Reconnect","dxSocket.Reconnect","socket","options","reconnectTime","backoffRate","timeout","checkForOpen","newSocket","after","event","clearTimeout","wasClean","disconnected","replace","reconnect","socket.disconnected","setTimeout","readyState","socket.reconnect","args","LongPoll","WebSocket","URL","url"]
+}

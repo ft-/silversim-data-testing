@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"StackedColumns.js",
+"lineCount":2,
+"mappings":"A;AAAAA,MAAA,+GACC,QAAA,CAASC,CAAT,CAAkBC,CAAlB,CAAwBC,CAAxB,CAAiCC,CAAjC,QAEOH,EAAA,wCAAgDE,CAAhD,iBAGUE,QAAAA,OAKXC,EAAQF,CAAAG,aAAA,CAA2BC,WAA3B,CAAwCN,CAAAO,MAAA,oBAAxC,CACZH,EAAAI,KANeL,KAOfC,EAAAK,KAPeN,YAQRC,EARQD,CAHV,iBAcWO,QAAAA,CAASC,CAATD,CAAiBE,CAAjBF,CAA4BG,CAA5BH,QACTR,EAAAQ,gBAAAI,KAAA,MAAyCH,CAAzC,CAAiDC,CAAjD,CAA4DC,CAA5D,CADSH,CAdX,EAFP,CADD;",
+"sources":["StackedColumns.js.uncompressed.js"],
+"names":["define","declare","lang","Columns","commonStacked","getSeriesStats","stats","collectStats","series","hitch","hmin","hmax","rearrangeValues","values","transform","baseline","call"]
+}

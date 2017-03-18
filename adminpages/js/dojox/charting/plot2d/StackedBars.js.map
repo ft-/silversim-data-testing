@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"StackedBars.js",
+"lineCount":2,
+"mappings":"A;AAAAA,MAAA,yGACC,QAAA,CAASC,CAAT,CAAkBC,CAAlB,CAAwBC,CAAxB,CAA8BC,CAA9B,QAEOH,EAAA,qCAA6CE,CAA7C,iBAGUE,QAAAA,OAKXC,EAAQF,CAAAG,aAAA,CAA2BC,WAA3B,CAAwCN,CAAAO,MAAA,oBAAxC,CALGJ,CAKuEK,CACtFJ,EAAAK,KANeN,KAOfC,EAAAM,KAPeP,KAQfK,EAReL,CAQXC,CAAAK,KAAYL,EAAAK,KARDN,CAQcC,CAAAO,KAAYP,EAAAO,KAR1BR,CAQuCK,CACtDA,EATeL,CASXC,CAAAM,KAAYN,EAAAM,KATDP,CAScC,CAAAQ,KAAYR,EAAAQ,KAT1BT,CASuCK,CATvCL,OAURC,EAVQD,CAHV,iBAeWU,QAAAA,CAASC,CAATD,CAAiBE,CAAjBF,CAA4BG,CAA5BH,QACTX,EAAAW,gBAAAI,KAAA,MAAyCH,CAAzC,CAAiDC,CAAjD,CAA4DC,CAA5D,CADSH,CAfX,EAFP,CADD;",
+"sources":["StackedBars.js.uncompressed.js"],
+"names":["define","declare","lang","Bars","commonStacked","getSeriesStats","stats","collectStats","series","hitch","t","hmin","hmax","vmin","vmax","rearrangeValues","values","transform","baseline","call"]
+}
