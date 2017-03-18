@@ -166,6 +166,16 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 				childWidget.on("click", switchToConfigurationIssues);
 			}
 		}
+        
+        if(containsAdminAll || array.indexOf(login_data.rights, "packages.view")>=0)
+        {
+				childWidget = new dojox.mobile.ListItem({
+					clickable:true,
+					label:"Package Admin",
+                    moveTo:"packageadmin",
+                    transition:"slide"});
+				list.addChild(childWidget);
+        }
 		
 		if(containsAdminAll || array.indexOf(login_data.rights, "modules.view")>=0)
 		{
@@ -334,6 +344,7 @@ function processLoginStep4(request, TransitionEvent, registry, array, login_data
 	initAccountDetails();
 	initNpcDetails();
 	initRealTimeLog();
+    initPackageAdmin();
 	
 	new TransitionEvent(viewlogin, {
 		moveTo: "viewmain",

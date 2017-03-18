@@ -34,6 +34,7 @@
 	<script src="/admin/js/silversim/index.js"></script>
 	<script src="/admin/js/silversim/login.js"></script>
 	<script src="/admin/js/silversim/estates.js"></script>
+    <script src="/admin/js/silversim/packages.js"></script>
 	<script src="/admin/js/silversim/logincontrol.js"></script>
 	<script src="/admin/js/silversim/regionenable.js"></script>
 	<script src="/admin/js/silversim/regionstartstop.js"></script>
@@ -72,6 +73,15 @@
           style="width:100px;" onclick="deleteEstate()">OK</button>
 		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
           style="width:100px;" onclick="dijit.registry.byId('confirmestatedeletedialog').hide()">Cancel</button>
+	</div>
+
+	<!------------------------------------------------------------------------->
+	<div id="confirmpackageuninstalldialog" data-dojo-type="dojox/mobile/SimpleDialog">
+		<div class="mblSimpleDialogTitle">Do you really want to uninstall this package?</div>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="uninstallSelectedPackage()">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmpackageuninstalldialog').hide()">Cancel</button>
 	</div>
 
 	<!------------------------------------------------------------------------->
@@ -503,10 +513,26 @@
 	</div>
 	
 	<!------------------------------------------------------------------------->
+	<div id="packageadmin" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Package Admin</h1>
+		<div id="view_packageadmin" data-dojo-type="dojox/mobile/ScrollableView">
+		</div>
+	</div>
+	
+	<!------------------------------------------------------------------------->
 	<div id="viewinstalledpackages" data-dojo-type="dojox/mobile/View">
-		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'viewmain', transition:'slide', transitionDir:'-1'">Installed</h1>
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'packageadmin', transition:'slide', transitionDir:'-1'">Installed</h1>
 		<div data-dojo-type="dojox/mobile/ScrollableView">
 			<ul id="list_installedpackages" data-dojo-type="dojox/mobile/RoundRectList">
+			</ul>
+		</div>
+	</div>
+	
+	<!------------------------------------------------------------------------->
+	<div id="viewavailablepackages" data-dojo-type="dojox/mobile/View">
+		<h1 data-dojo-type="dojox/mobile/Heading" data-dojo-props="back:'Back', moveTo:'packageadmin', transition:'slide', transitionDir:'-1'">Installed</h1>
+		<div data-dojo-type="dojox/mobile/ScrollableView">
+			<ul id="list_availablepackages" data-dojo-type="dojox/mobile/RoundRectList">
 			</ul>
 		</div>
 	</div>
