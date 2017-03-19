@@ -62,9 +62,9 @@ function switchToAccounts(transitionDirection, fromview)
 				}
 				
 				var hasDetailsRight = containsAdminAll ||
-					array.indexOf("useraccounts.manage")>=0 ||
-					array.indexOf("useraccounts.delete")>=0 ||
-					array.indexOf("useraccounts.create")>=0;
+					array.indexOf(rights, "useraccounts.manage")>=0 ||
+					array.indexOf(rights, "useraccounts.delete")>=0 ||
+					array.indexOf(rights, "useraccounts.create")>=0;
 				
 				array.forEach(data.accounts, function(account)
 				{

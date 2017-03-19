@@ -28,7 +28,7 @@ function initPackageAdmin()
         var packageadminview = registry.byId("view_packageadmin");
         packageadminview.destroyDescendants();
         
-        if(containsAdminAll || array.indexOf(login_data.rights, "packages.view")>=0)
+        if(containsAdminAll || array.indexOf(rights, "packages.view")>=0)
         {
             packageadminview.addChild(new dojox.mobile.RoundRectCategory({label:"Current Installation"}));
             var list = new dojox.mobile.RoundRectList();
@@ -39,7 +39,7 @@ function initPackageAdmin()
             list.addChild(childWidget);
             childWidget.on("click", switchToInstalledPackages);
         }
-        if(containsAdminAll || array.indexOf(login_data.rights, "packages.install")>=0)
+        if(containsAdminAll || array.indexOf(rights, "packages.install")>=0)
         {
             packageadminview.addChild(new dojox.mobile.RoundRectCategory({label:"Package Administration"}));
             var list = new dojox.mobile.RoundRectList();
@@ -174,7 +174,7 @@ function switchToAvailablePackages()
                 }
                 
                 var hasUninstallRight = containsAdminAll ||
-                    array.indexOf("packages.uninstall")>=0;
+                    array.indexOf(rights, "packages.uninstall")>=0;
                 
                 array.forEach(data.list, function(pack)
                 {

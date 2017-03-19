@@ -61,9 +61,9 @@ function switchToEstatesList(transitionDirection, fromview)
 				}
 				
 				var hasDetailsRight = containsAdminAll ||
-					array.indexOf("estates.manage")>=0 ||
-					array.indexOf("estate.notice")>=0 ||
-					array.indexOf("estates.view")>=0;
+					array.indexOf(rights, "estates.manage")>=0 ||
+					array.indexOf(rights, "estate.notice")>=0 ||
+					array.indexOf(rights, "estates.view")>=0;
 				
 				array.forEach(data.estates, function(estate)
 				{

@@ -104,9 +104,9 @@ function switchToRegionsList(transitionDirection, fromview)
 				}
 				
 				var hasDetailsRight = containsAdminAll ||
-					array.indexOf("regions.manage")>=0 ||
-					array.indexOf("region.notice")>=0 ||
-					array.indexOf("regions.view")>=0;
+					array.indexOf(rights, "regions.manage")>=0 ||
+					array.indexOf(rights, "region.notice")>=0 ||
+					array.indexOf(rights, "regions.view")>=0;
 				
 				array.forEach(data.regions, function(region)
 				{
