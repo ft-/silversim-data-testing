@@ -410,6 +410,11 @@ function uninstallSelectedPackage()
                     }
                     return;
                 }
+                else
+                {
+                    var item = registry.byId("pkg_" + selectedpackage);
+                    item.destroyRecursive();
+                }
             },
             function(err) {
                 showErrorTextDialog(err.toString());
