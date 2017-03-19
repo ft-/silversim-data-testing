@@ -1,8 +1,0 @@
-{
-"version":3,
-"file":"firebug.js",
-"lineCount":8,
-"mappings":"A;;;;;;;AAAAA,MAAA,4BAAoC,QAAA,MASpBC,cAAAC,CAAeC,MAAAC,UAAAC,UAAfH,CAToB,UAa9BI,uCAb8B,CAc1BC,GAd0B,CActBA,CAdsB,CAcpBD,CAAAE,OAdoB,CAcPD,CAdO,QAe7BE,EAAIH,CAAA,CAAMC,CAAN,CAfyB,IAgB7BG,OAAA,CAAQD,CAAR,CAhB6B,GAgBhBC,OAAA,CAAQD,CAAR,CAAAE,MAhBgB,MAoB7BC,MAAQN,CAAA,CAAMC,CAAN,CACZG,QAAA,CAAQE,CAAR,CArBiC,CAqBpBF,OAAA,CAAQD,CAAR,CACbC,QAAA,CAAQD,CAAR,CAtBiC,CAsBnB,QAAA,OACTI,EAAOD,CADE,OAEN,SAAA,GACNF,OAAA,CAAQG,CAAR,CAAA,CAAcC,KAAAC,UAAAC,KAAAC,KAAA,CAA0BC,SAA1B,KAAd,CADM,CAFM,CAAA,EAtBmB,MA+B7BR,OAAAS,MAAA,EA/B6B,OA+BLC,CA/BK,KAApC;",
-"sources":["firebug.js.uncompressed.js"],
-"names":["define","test","isNewIE","window","navigator","userAgent","calls","i","length","m","console","_fake","n","type","Array","prototype","join","call","arguments","clear","e"]
-}

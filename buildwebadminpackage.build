@@ -3,16 +3,19 @@
         <delete>
             <fileset>
                 <include name="**/*.uncompressed.js"/>
+                <include name="**/*.consoleStripped.js"/>
+                <include name="**/*.js.map"/>
             </fileset>
         </delete>
-        
-        <echo message="&lt;?xml version=&quot;1.0&quot;?&gt;" file="../packages/SilverSim.WebAdmin.spkg"/>
-        <echo message="&lt;package&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
-        <echo message="  &lt;name&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
-        <echo message="  &lt;dependencies&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
-        <echo message="    &lt;dependency name=&quot;SilverSim.WebIF&quot;&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
-        <echo message="  &lt;/dependencies&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
-        <echo message="  &lt;files&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <property name="cur_dir_length" value="${string::get-length(directory::get-current-directory())}"/>
+        <echo message="&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;package&gt;
+  &lt;name&gt;SilverSim.WebAdmin&lt;/name&gt;
+  &lt;dependencies&gt;
+    &lt;dependency name=&quot;SilverSim.WebIF&quot;/&gt;
+  &lt;/dependencies&gt;
+  &lt;files&gt;
+" file="../packages/SilverSim.WebAdmin.spkg"/>
         <foreach item="File" property="filename">
             <in>
                 <items>
@@ -20,9 +23,12 @@
                 </items>
             </in>
             <do>
-                <echo message="    &lt;file name=&quot;data/${filename}&quot;/&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+                <echo message="    &lt;file name=&quot;data${string::replace(string::substring(filename, cur_dir_length, string::get-length(filename) - int::parse(cur_dir_length)), '\', '/')}&quot;/&gt;
+" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
             </do>
         </foreach>
-        <echo message="&lt;/package&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="  &lt;/files&gt;
+&lt;/package&gt;
+" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
     </target>
 </project>
