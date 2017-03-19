@@ -1,0 +1,28 @@
+<project name="silversim-workspace" default="runme">
+    <target name="runme">
+        <delete>
+            <fileset>
+                <include name="**/*.uncompressed.js"/>
+            </fileset>
+        </delete>
+        
+        <echo message="&lt;?xml version=&quot;1.0&quot;?&gt;" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="&lt;package&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="  &lt;name&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="  &lt;dependencies&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="    &lt;dependency name=&quot;SilverSim.WebIF&quot;&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="  &lt;/dependencies&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <echo message="  &lt;files&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+        <foreach item="File" property="filename">
+            <in>
+                <items>
+                    <include name="adminpages/**"/>
+                </items>
+            </in>
+            <do>
+                <echo message="    &lt;file name=&quot;data/${filename}&quot;/&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+            </do>
+        </foreach>
+        <echo message="&lt;/package&gt;" append="true" file="../packages/SilverSim.WebAdmin.spkg"/>
+    </target>
+</project>
