@@ -134,6 +134,7 @@ function switchToInstalledPackages()
 function switchToAvailablePackages()
 {
     var installedpackages = []
+    var packageversions = {}
     require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
         function(array, request, registry, TransitionEvent)
     {
@@ -178,6 +179,7 @@ function switchToAvailablePackages()
                 array.forEach(data.list, function(pack)
                 {
                     installedpackages.push(pack.name);
+                    packageversions[pack.name] = pack.version;
                 });
                 
                 list = registry.byId("list_availablepackages");
@@ -221,20 +223,28 @@ function switchToAvailablePackages()
                         array.forEach(data.list, function(pack)
                         {
                             var actArrowClass = 'mblDomButtonGreenCirclePlus';
+                            var showpackage = true;
                             if(array.indexOf(installedpackages, pack.name)>=0)
                             {
                                 actArrowClass = 'mblDomButtonBlueCirclePlus';
+                                if(packageversions[pack.name] == pack.version)
+                                {
+                                    showpackage = false;
+                                }
                             }
-                            var childWidget = new dojox.mobile.ListItem({
-                                id:"pkginst_" + pack.name,
-                                rightText:pack.version,
-                                clickable:hasInstallRight,
-                                arrowClass:actArrowClass,
-                                label:pack.name});
-                            list.addChild(childWidget);
-                            if(hasInstallRight)
+                            if(showpackage)
                             {
-                                childWidget.on("click", function() { installPackage(pack.name);});
+                                var childWidget = new dojox.mobile.ListItem({
+                                    id:"pkginst_" + pack.name,
+                                    rightText:pack.version,
+                                    clickable:hasInstallRight,
+                                    arrowClass:actArrowClass,
+                                    label:pack.name});
+                                list.addChild(childWidget);
+                                if(hasInstallRight)
+                                {
+                                    childWidget.on("click", function() { installPackage(pack.name);});
+                                }
                             }
                         });
                         
@@ -346,7 +356,7 @@ function installPackage(pkgid)
                 else
                 {
                     var item = registry.byId("pkginst_" + pkgid);
-                    item.setArrow('mblDomButtonBlueCirclePlus');
+                    item.destroyRecursive();
                 }
             },
             function(err) {
