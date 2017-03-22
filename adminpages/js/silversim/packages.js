@@ -20,6 +20,9 @@
 // exception statement from your version.
 
 /******************************************************************************/
+var selectedpackage;
+
+/******************************************************************************/
 function initPackageAdmin()
 {
     require(["dojo/_base/array", "dojo/request", "dijit/registry"], 
@@ -59,10 +62,11 @@ function initPackageAdmin()
 }
 
 /******************************************************************************/
+var uninstallClickedBefore = false;
 function switchToInstalledPackages()
 {
-    require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
-        function(array, request, registry, TransitionEvent)
+    require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent", "dojo/dom-class"], 
+        function(array, request, registry, TransitionEvent, domClass)
     {
         list = registry.byId("list_installedpackages");
         list.destroyDescendants();
@@ -107,14 +111,18 @@ function switchToInstalledPackages()
                     var childWidget = new dojox.mobile.ListItem({
                         id:"pkg_" + pack.name,
                         rightText:pack.version,
-                        clickable:hasUninstallRight,
-                        arrowClass:'mblDomButtonRedCircleMinus',
+                        clickable:true,
                         label:pack.name});
                     list.addChild(childWidget);
                     if(hasUninstallRight)
                     {
-                        childWidget.on("click", function() { uninstallPackage(pack.name);});
+                        childWidget.set("rightIcon2", "mblDomButtonRedCircleMinus");
+                        dojo.connect(childWidget.rightIcon2Node, "onclick", function() { uninstallPackage(pack.name); });
                     }
+                    dojo.connect(childWidget.labelNode, "click", function(e) { 
+                        selectedpackage = pack.name;
+                        viewInstalledDetails(pack.name);
+                    });
                 });
                 
                 new TransitionEvent(packageadmin, {
@@ -237,14 +245,18 @@ function switchToAvailablePackages()
                                 var childWidget = new dojox.mobile.ListItem({
                                     id:"pkginst_" + pack.name,
                                     rightText:pack.version,
-                                    clickable:hasInstallRight,
-                                    arrowClass:actArrowClass,
+                                    clickable:true,
                                     label:pack.name});
                                 list.addChild(childWidget);
                                 if(hasInstallRight)
                                 {
-                                    childWidget.on("click", function() { installPackage(pack.name);});
+                                    childWidget.set('rightIcon2', actArrowClass);
+                                    dojo.connect(childWidget.rightIcon2Node, "click", function() { installPackage(pack.name);});
                                 }
+                                dojo.connect(childWidget.labelNode, "click", function(e) { 
+                                    selectedpackage = pack.name;
+                                    viewAvailableDetails(pack.name);
+                                });
                             }
                         });
                         
@@ -267,7 +279,127 @@ function switchToAvailablePackages()
 }
 
 /******************************************************************************/
-function updatePackageFeed(pkgid)
+function viewInstalledDetails(pkgid)
+{
+    require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+        function(array, request, registry, TransitionEvent)
+    {
+        request("/admin/json", 
+        {
+            method:"POST",
+            data: JSON.stringify(
+            { 
+                "method":"package.get.installed",
+                "package":pkgid,
+                "sessionid":sessionid
+            }),
+            headers:
+            {
+                "Content-Type":"application/json"
+            },
+            handleAs:"json"
+        }).then(
+            function(data) 
+            {
+                if(!data.success)
+                {
+                    if(data.reason == 1)
+                    {
+                        new TransitionEvent(viewinstalledpackages, {
+                            moveTo: "viewlogin",
+                            transition: "slide",
+                            transitionDir: -1
+                        }).dispatch();
+                    }
+                    else
+                    {
+                        showErrorDialog(data.reason);
+                    }
+                    return;
+                }
+                else
+                {
+                    registry.byId('installedpackage_name').set('rightText', data.name);
+                    registry.byId('installedpackage_version').set('rightText', data.version);
+                    registry.byId('installedpackage_license').set('rightText', data.license);
+                    registry.byId('installedpackage_description').set('rightText', data.description);
+                    
+                    new TransitionEvent(viewinstalledpackages, {
+                        moveTo: "viewinstalledpackage",
+                        transition: "slide",
+                        transitionDir: 1
+                    }).dispatch();
+                }
+            },
+            function(err) {
+                showErrorTextDialog(err.toString());
+            }
+        );
+    });
+}
+
+/******************************************************************************/
+function viewAvailableDetails(pkgid)
+{
+    require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+        function(array, request, registry, TransitionEvent)
+    {
+        request("/admin/json", 
+        {
+            method:"POST",
+            data: JSON.stringify(
+            { 
+                "method":"package.get.available",
+                "package":pkgid,
+                "sessionid":sessionid
+            }),
+            headers:
+            {
+                "Content-Type":"application/json"
+            },
+            handleAs:"json"
+        }).then(
+            function(data) 
+            {
+                if(!data.success)
+                {
+                    if(data.reason == 1)
+                    {
+                        new TransitionEvent(viewinstalledpackages, {
+                            moveTo: "viewlogin",
+                            transition: "slide",
+                            transitionDir: -1
+                        }).dispatch();
+                    }
+                    else
+                    {
+                        showErrorDialog(data.reason);
+                    }
+                    return;
+                }
+                else
+                {
+                    registry.byId('availablepackage_name').set('rightText', data.name);
+                    registry.byId('availablepackage_version').set('rightText', data.version);
+                    registry.byId('availablepackage_license').set('rightText', data.license);
+                    registry.byId('availablepackage_description').set('rightText', data.description);
+                    
+                    new TransitionEvent(viewavailablepackages, {
+                        moveTo: "viewavailablepackage",
+                        transition: "slide",
+                        transitionDir: 1
+                    }).dispatch();
+                }
+            },
+            function(err) {
+                showErrorTextDialog(err.toString());
+            }
+        );
+    });
+}
+
+/******************************************************************************/
+function updatePackageFeed()
 {
     require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
         function(array, request, registry, TransitionEvent)
@@ -367,8 +499,6 @@ function installPackage(pkgid)
 }
 
 /******************************************************************************/
-var selectedpackage;
-
 function uninstallPackage(pkgid)
 {
     require(["dijit/registry"], 
