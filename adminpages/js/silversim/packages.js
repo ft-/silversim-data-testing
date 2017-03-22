@@ -57,7 +57,63 @@ function initPackageAdmin()
                 label:"Update Package Feed"});
             list.addChild(childWidget);
             childWidget.on("click", updatePackageFeed);
+            
+            list = new dojox.mobile.RoundRectList();
+            packageadminview.addChild(list);
+            childWidget = new dojox.mobile.ListItem({
+                clickable:true,
+                label:"Update instance"
+            });
+            list.addChild(childWidget);
+            childWidget.on("click", function() { registry.byId('confirmpackageupdatedialog').show(); });
         }
+    });
+}
+
+/******************************************************************************/
+function updatePackages()
+{
+    require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+        function(array, request, registry, TransitionEvent)
+    {
+        registry.byId('confirmpackageupdatedialog').hide();
+        request("/admin/json", 
+        {
+            method:"POST",
+            data: JSON.stringify(
+            { 
+                "method":"packages.update.system",
+                "sessionid":sessionid
+            }),
+            headers:
+            {
+                "Content-Type":"application/json"
+            },
+            handleAs:"json"
+        }).then(
+            function(data) 
+            {
+                if(!data.success)
+                {
+                    if(data.reason == 1)
+                    {
+                        new TransitionEvent(packageadmin, {
+                            moveTo: "viewlogin",
+                            transition: "slide",
+                            transitionDir: -1
+                        }).dispatch();
+                    }
+                    else
+                    {
+                        showErrorDialog(data.reason);
+                    }
+                    return;
+                }
+            },
+            function(err) {
+                showErrorTextDialog(err.toString());
+            }
+        );
     });
 }
 

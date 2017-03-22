@@ -85,6 +85,15 @@
     </div>
 
     <!------------------------------------------------------------------------->
+    <div id="confirmpackageupdatedialog" data-dojo-type="dojox/mobile/SimpleDialog">
+        <div class="mblSimpleDialogTitle">Do you want to update this instance?</div>
+        <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="updatePackages()">OK</button>
+        <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
+          style="width:100px;" onclick="dijit.registry.byId('confirmpackageupdatedialog').hide()">Cancel</button>
+    </div>
+
+    <!------------------------------------------------------------------------->
     <div id="confirmregiondeletedialog" data-dojo-type="dojox/mobile/SimpleDialog">
         <div class="mblSimpleDialogTitle">Do you really want to delete this region?</div>
         <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
