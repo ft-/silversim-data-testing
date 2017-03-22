@@ -35,6 +35,7 @@ require([
 	"dojox/mobile/compat",
 	"dojox/mobile",
 	"dijit/registry",
+    "dojo/keys",
 	"dojo/domReady!",
 	"dojox/mobile/View",
 	"dojox/mobile/ScrollableView",
@@ -49,9 +50,23 @@ require([
 	"dojox/mobile/SimpleDialog",
 	"dojox/mobile/RoundRectCategory",
 	"dojox/mobile/Pane",
-], function (parser) {
+], function (parser, compat, mobile, registry, keys) {
 	// now parse the page for widgets
 	parser.parse();
+    registry.byId('user').on("keyup", function(e)
+    {
+        if(e.keyCode == keys.ENTER)
+        {
+            registry.byId('pass').focus();
+        }
+    });
+    registry.byId('pass').on("keyup", function(e)
+    {
+        if(e.keyCode == keys.ENTER)
+        {
+            processLogin(e);
+        }
+    });
 });
 
 
