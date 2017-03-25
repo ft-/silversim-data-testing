@@ -45,6 +45,7 @@
     <script src="/admin/js/silversim/accounts.js"></script>
     <script src="/admin/js/silversim/npcs.js"></script>
     <script src="/admin/js/silversim/realtimelog.js"></script>
+    <script src="/admin/js/silversim/selectuser.js"></script>
 </head>
 <body class="flat" style="visibility:hidden;">
     <div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
@@ -233,8 +234,8 @@
                 <li data-dojo-type="dojox/mobile/ListItem">
                     <input data-dojo-type="dojox/mobile/TextBox" id="regionadd_name" placeHolder="Region Name" style="width: 200px;"/>
                 </li>
-                <li data-dojo-type="dojox/mobile/ListItem">
-                    <input data-dojo-type="dojox/mobile/TextBox" id="regionadd_owner" placeHolder="Owner" style="width: 200px;"/>
+                <li id="regionadd_owner" data-dojo-type="dojox/mobile/ListItem" onclick="regionadd_selectowner()" data-dojo-props="clickable:true">
+                    Owner
                 </li>
                 
                 <li data-dojo-type="dojox/mobile/ListItem">
@@ -381,8 +382,8 @@
                 <li data-dojo-type="dojox/mobile/ListItem">
                     <input data-dojo-type="dojox/mobile/TextBox" id="estateadd_name" placeHolder="Estate Name" style="width: 200px;"/>
                 </li>
-                <li data-dojo-type="dojox/mobile/ListItem">
-                    <input data-dojo-type="dojox/mobile/TextBox" id="estateadd_owner" placeHolder="Owner" style="width: 200px;"/>
+                <li id="estateadd_owner" data-dojo-type="dojox/mobile/ListItem" onclick="estateadd_selectowner()" data-dojo-props="clickable:true">
+                    Owner
                 </li>
                 <li data-dojo-type="dojox/mobile/ListItem">
                     <input data-dojo-type="dojox/mobile/TextBox" id="estateadd_pricepermeter" placeHolder="Price Per Meter" style="width: 200px;"/>
@@ -600,6 +601,37 @@
         <div id="log_output" data-dojo-type="dojox/mobile/Pane" style="background-color: black; color: lightgray;">
         </div>
         </pre>
+        </div>
+    </div>
+    
+    <!------------------------------------------------------------------------->
+    <div id="viewselectuser" data-dojo-type="dojox/mobile/View">
+        <h1 id="viewselectuser_title" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select user'">
+        <div data-dojo-type="dojox/mobile/ToolBarButton" 
+                        data-dojo-props="onClick: function(e){ selectuser_go_back(); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+        <div data-dojo-type="dojox/mobile/ToolBarButton" 
+                        data-dojo-props="label:'Select',
+                                         onClick: function(){ selectuser_go_finish(); }"
+                        style="float:right;"></div>
+        </h1>
+        <h2 data-dojo-type="dojox/mobile/RoundRectCategory">Current</h2>
+        <ul data-dojo-type="dojox/mobile/RoundRectList">
+            <li id="viewselectuser_fullname" data-dojo-type="dojox/mobile/ListItem">Name</li>
+            <li data-dojo-type="dojox/mobile/ListItem"><input data-dojo-type="dojox/mobile/TextBox" id="viewselectuser_id" placeHolder="Search by UUID" style="width: 200px;"/>
+            <button data-dojo-type="dojox/mobile/Button" onClick="selectuser_byuuid()">Send</button>
+            </li>
+            <li data-dojo-type="dojox/mobile/ListItem"><input data-dojo-type="dojox/mobile/TextBox" id="viewselectuser_query" placeHolder="search by query" style="width: 200px;"/>
+            <button data-dojo-type="dojox/mobile/Button" onClick="selectuser_byquery()">Send</button>
+            </li>
+            <li data-dojo-type="dojox/mobile/ListItem">
+            <input data-dojo-type="dojox/mobile/TextBox" id="viewselectuser_firstname" placeHolder="Search by Firstname" style="width: 200px;"/>
+            <input data-dojo-type="dojox/mobile/TextBox" id="viewselectuser_lastname" placeHolder="Search by Lastname" style="width: 200px;"/>
+            <button data-dojo-type="dojox/mobile/Button" onClick="selectuser_byname()">Send</button>
+            </li>
+        </ul>
+        <div "list_viewfoundusers" data-dojo-type="dojox/mobile/ScrollableView">
+            <ul id="list_foundusers" data-dojo-type="dojox/mobile/RoundRectList">
+            </ul>
         </div>
     </div>
 </body>
