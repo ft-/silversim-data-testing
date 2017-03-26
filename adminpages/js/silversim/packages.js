@@ -77,6 +77,7 @@ function updatePackages()
         function(array, request, registry, TransitionEvent)
     {
         registry.byId('confirmpackageupdatedialog').hide();
+        showProgressIndicatorDialog("Updating packages");
         request("/admin/json", 
         {
             method:"POST",
@@ -93,6 +94,7 @@ function updatePackages()
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)
@@ -462,6 +464,7 @@ function updatePackageFeed()
     {
         list = registry.byId("list_installedpackages");
         list.destroyDescendants();
+        showProgressIndicatorDialog("Updating package feed");
         request("/admin/json", 
         {
             method:"POST",
@@ -478,6 +481,7 @@ function updatePackageFeed()
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)
@@ -508,6 +512,7 @@ function installPackage(pkgid)
     require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
         function(array, request, registry, TransitionEvent)
     {
+        showProgressIndicatorDialog("Installing packages");
         request("/admin/json", 
         {
             method:"POST",
@@ -525,6 +530,7 @@ function installPackage(pkgid)
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)
@@ -571,6 +577,7 @@ function uninstallSelectedPackage()
     require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
         function(array, request, registry, TransitionEvent)
     {
+        showProgressIndicatorDialog("Uninstalling package");
         registry.byId('confirmpackageuninstalldialog').hide();
         list = registry.byId("list_installedpackages");
         request("/admin/json", 
@@ -590,6 +597,7 @@ function uninstallSelectedPackage()
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)

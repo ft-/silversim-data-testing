@@ -115,6 +115,33 @@ function showErrorTextDialog(message)
 	});
 }
 
+var progress_hidden;
+var progress_indicator;
+
+/******************************************************************************/
+function showProgressIndicatorDialog(title)
+{
+    require(["dijit/registry", "dojox/mobile/ProgressIndicator", "dojo/_base/window", "dojox/timing"], function(registry, ProgressIndicator, win)
+    {
+        if(!progress_indicator)
+        {
+            progress_indicator = new ProgressIndicator({size:40, colors:['#E60012','#F39800','#FFF100','#8FC31F','#009944','#009E96',
+                  '#00A0E9','#0068B7','#1D2088','#920783','#E4007F','#E5004F']});
+        }
+        win.body().appendChild(progress_indicator.domNode);
+        progress_indicator.start();
+    });
+}
+
+/******************************************************************************/
+function hideProgressIndicatorDialog()
+{
+    require(["dijit/registry"], function(registry)
+    {
+        progress_indicator.stop();
+    });
+}
+
 /******************************************************************************/
 function generateResponse(challenge, password)
 {

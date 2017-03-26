@@ -95,6 +95,7 @@ function selectuser_byuuid()
     {
         list = registry.byId("list_foundusers");
         list.destroyDescendants();
+        showProgressIndicatorDialog("Retrieving data");
         request("/admin/json", 
         {
             method:"POST",
@@ -112,6 +113,7 @@ function selectuser_byuuid()
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)
@@ -151,6 +153,7 @@ function selectuser_byname(e)
     {
         list = registry.byId("list_foundusers");
         list.destroyDescendants();
+        showProgressIndicatorDialog("Retrieving data");
         request("/admin/json", 
         {
             method:"POST",
@@ -169,6 +172,7 @@ function selectuser_byname(e)
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)
@@ -207,6 +211,7 @@ function selectuser_byquery(e)
     {
         list = registry.byId("list_foundusers");
         list.destroyDescendants();
+        showProgressIndicatorDialog("Retrieving data");
         request("/admin/json", 
         {
             method:"POST",
@@ -224,6 +229,7 @@ function selectuser_byquery(e)
         }).then(
             function(data) 
             {
+                hideProgressIndicatorDialog();
                 if(!data.success)
                 {
                     if(data.reason == 1)
