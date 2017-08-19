@@ -290,5 +290,50 @@ function switchToNpcDetails(id)
 /******************************************************************************/
 function removeNpc()
 {
-	
+	require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+		function(array, request, registry, TransitionEvent)
+	{
+		registry.byId('confirmnpcremovedialog').hide();
+		request("/admin/json", 
+		{
+			method:"POST",
+			data: JSON.stringify(
+			{ 
+				"method":"npc.remove",
+				"regionid":selectedNpcListRegionID,
+				"id":selectedNpcId,
+				"sessionid":sessionid
+			}),
+			headers:
+			{
+				"Content-Type":"application/json"
+			},
+			handleAs:"json"
+		}).then(
+			function(data) 
+			{
+				if(!data.success)
+				{
+					if(data.reason == 1)
+					{
+						new TransitionEvent(fromview, {
+							moveTo: "viewlogin",
+							transition: "slide",
+							transitionDir: -1
+						}).dispatch();
+					}
+					else
+					{
+						showErrorDialog(data.reason);
+					}
+					return;
+				}
+				
+				switchToActualNpcList(-1, viewnpcdetails);
+			},
+			function(err) {
+				showErrorTextDialog(err.toString());
+			}
+		);
+	});
 }
