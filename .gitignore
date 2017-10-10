@@ -6,3 +6,4 @@ dl-cache
 SilverSim.gridinfo.*
 dumps
 *.db
+/fsasset
