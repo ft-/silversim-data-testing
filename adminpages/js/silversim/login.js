@@ -98,6 +98,48 @@ function processLoginStep2(request, TransitionEvent, registry, array, challenge_
 /******************************************************************************/
 function processLoginStep3(request, TransitionEvent, registry, array, login_data)
 {
+	list = registry.byId("list_lslperms");
+	request("/admin/json", 
+	{
+		method:"POST",
+		data: JSON.stringify(
+		{ 
+			"method":"lsl.controlledperms",
+			"sessionid":sessionid
+		}),
+		headers:
+		{
+			"Content-Type":"application/json"
+		},
+		handleAs:"json"
+	}).then(
+		function(perms_data) 
+		{
+			list.destroyDescendants();
+			array.forEach(perms_data.list, function(pack)
+			{
+			    var childWidget = new dojox.mobile.ListItem({
+				id:"lslperm_" + pack.name,
+				clickable:true,
+				label:pack.name});
+			    list.addChild(childWidget);
+			    dojo.connect(childWidget.labelNode, "click", function(e) { 
+				//selectedpackage = pack.name;
+				//viewInstalledDetails(pack.name);
+			    });
+			});
+			
+			processLoginStep4(request, TransitionEvent, registry, array, login_data);
+		},
+		function(err) {
+			processLoginStep4(request, TransitionEvent, registry, array, login_data);
+		}
+	);
+}
+
+/******************************************************************************/
+function processLoginStep4(request, TransitionEvent, registry, array, login_data)
+{
 	request("/admin/json", 
 	{
 		method:"POST",
@@ -114,7 +156,7 @@ function processLoginStep3(request, TransitionEvent, registry, array, login_data
 	}).then(
 		function(modules_data) 
 		{
-			processLoginStep4(request, TransitionEvent, registry, array, login_data, modules_data);
+			processLoginStep5(request, TransitionEvent, registry, array, login_data, modules_data);
 		},
 		function(err) {
 			processLogout(0);
@@ -123,7 +165,7 @@ function processLoginStep3(request, TransitionEvent, registry, array, login_data
 }
 
 /******************************************************************************/
-function processLoginStep4(request, TransitionEvent, registry, array, login_data, modules_data)
+function processLoginStep5(request, TransitionEvent, registry, array, login_data, modules_data)
 {
 	if(!login_data.success)
 	{
