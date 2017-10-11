@@ -904,6 +904,19 @@ function initRegionDetails()
             listItem.set('rightText', '');
         }
         
+        if((containsAdminAll || array.indexOf(rights, "serverparams.manage")>=0))
+        {
+            childWidget = new dojox.mobile.RoundRectCategory({label:"OSSL Permissions"});
+            view.addChild(childWidget);
+
+            var formWidget = new dojox.mobile.RoundRectList();
+            var listItem;
+            view.addChild(formWidget);
+            listItem = new dojox.mobile.ListItem({label:"OSSL Permissions (region)",clickable:true});
+            formWidget.addChild(listItem);
+            listItem.on("click", function() {osslperms_show(viewmain, "OSSL Permissions", selectedRegionID);});
+        }
+        
         if(containsAdminAll ||array.indexOf(rights, "regions.manage")>=0)
         {
             childWidget = new dojox.mobile.RoundRectCategory({label:"Actions"});

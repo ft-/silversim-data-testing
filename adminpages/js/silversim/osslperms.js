@@ -158,7 +158,7 @@ function osslperm_select(functionid)
             method:"POST",
             data: JSON.stringify(
             { 
-                "method":"serverparams.get.explicitly",
+                "method":"serverparams.get",
                 "parameters":[
                     {
                         "parameter":"OSSL." + functionid + ".AllowedCreators",

@@ -354,7 +354,7 @@ function processLoginStep5(request, TransitionEvent, registry, array, login_data
                     label:"OSSL Default settings"
                 });
                 list.addChild(childWidget);
-                childWidget.on("click", function() { osslperms_show(viewmain, "OSSL Default Permissions", "00000000-0000-0000-0000-000000000000") });
+                childWidget.on("click", function() { osslperms_show(viewmain, "OSSL Default Permissions", "00000000-0000-0000-0000-000000000000"); });
             }
 		}
 	}
