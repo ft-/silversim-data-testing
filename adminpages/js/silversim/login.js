@@ -124,8 +124,7 @@ function processLoginStep3(request, TransitionEvent, registry, array, login_data
 				label:pack.name});
 			    list.addChild(childWidget);
 			    dojo.connect(childWidget.labelNode, "click", function(e) { 
-				//selectedpackage = pack.name;
-				//viewInstalledDetails(pack.name);
+                    osslperm_select(pack.name);
 			    });
 			});
 			
@@ -347,6 +346,16 @@ function processLoginStep5(request, TransitionEvent, registry, array, login_data
 				list.addChild(childWidget);
 				childWidget.on("click", function() { switchToNpcRegionsList(1, viewmain);});
 			}
+            
+            if(containsAdminAll || array.indexOf(login_data.rights, "serverparams.manage") >= 0)
+            {
+                childWidget = new dojox.mobile.ListItem({
+                    clickable:true,
+                    label:"OSSL Default settings"
+                });
+                list.addChild(childWidget);
+                childWidget.on("click", function() { osslperms_show(viewmain, "OSSL Default Permissions", "00000000-0000-0000-0000-000000000000") });
+            }
 		}
 	}
 	

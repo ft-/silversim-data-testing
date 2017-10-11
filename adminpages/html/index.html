@@ -46,6 +46,7 @@
     <script src="/admin/js/silversim/npcs.js"></script>
     <script src="/admin/js/silversim/realtimelog.js"></script>
     <script src="/admin/js/silversim/selectuser.js"></script>
+    <script src="/admin/js/silversim/osslperms.js"></script>
 </head>
 <body class="flat" style="visibility:hidden;">
     <div id="viewlogin" data-dojo-type="dojox/mobile/View" data-dojo-props="selected:true">
@@ -636,13 +637,55 @@
     </div>
     
     <!------------------------------------------------------------------------->
-    <div id="viewlslperms" data-dojo-type="dojox/mobile/View">
-        <h1 id="viewlslperms_title" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select permissions'">
+    <div id="viewosslperms" data-dojo-type="dojox/mobile/View">
+        <h1 id="viewosslperms_title" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select permissions'">
         <div data-dojo-type="dojox/mobile/ToolBarButton" 
-                        data-dojo-props="onClick: function(e){ switchBackFromLslPerms(); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+                        data-dojo-props="onClick: function(e){ osslperms_go_back(); }, arrow: 'left', label: 'Back'" style="float:left"></div>
         </h1>
         <div id="list_viewlslperms" data-dojo-type="dojox/mobile/ScrollableView">
             <ul id="list_lslperms" data-dojo-type="dojox/mobile/RoundRectList">
+            </ul>
+        </div>
+    </div>
+
+    <!------------------------------------------------------------------------->
+    <div id="viewosslperm" data-dojo-type="dojox/mobile/View">
+        <h1 id="viewosslperm_title" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select permissions'">
+        <div data-dojo-type="dojox/mobile/ToolBarButton" 
+                        data-dojo-props="onClick: function(e){ go_back_to_osslperms(); }, arrow: 'left', label: 'Back'" style="float:left"></div>
+        </h1>
+        <div data-dojo-type="dojox/mobile/ScrollableView">
+            <ul data-dojo-type="dojox/mobile/RoundRectList">
+                <li data-dojo-type="dojox/mobile/ListItem">
+                    Is estate owner allowed
+                    <div id="osslperm_estateownerallowed" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+                </li>
+                <li data-dojo-type="dojox/mobile/ListItem">
+                    Is estate manager allowed
+                    <div id="osslperm_estatemanagerallowed" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+                </li>
+                <li data-dojo-type="dojox/mobile/ListItem">
+                    Is region owner allowed
+                    <div id="osslperm_regionownerallowed" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+                </li>
+                <li data-dojo-type="dojox/mobile/ListItem">
+                    Is parcel owner allowed
+                    <div id="osslperm_parcelownerallowed" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+                </li>
+                <li data-dojo-type="dojox/mobile/ListItem">
+                    Is parcel group member allowed
+                    <div id="osslperm_parcelgroupmemberallowed" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+                </li>
+                <li data-dojo-type="dojox/mobile/ListItem">
+                    Is everyone allowed
+                    <div id="osslperm_everyoneallowed" data-dojo-type="dojox/mobile/Switch" value="off"></div>
+                </li>
+            </ul>
+            <h2 data-dojo-type="dojox/mobile/RoundRectCategory">Allowed creators</h2>
+            <ul id="list_allowedcreators" data-dojo-type="dojox/mobile/RoundRectList">
+            </ul>
+            <h2 data-dojo-type="dojox/mobile/RoundRectCategory">Allowed owners</h2>
+            <ul id="list_allowedowners" data-dojo-type="dojox/mobile/RoundRectList">
             </ul>
         </div>
     </div>
