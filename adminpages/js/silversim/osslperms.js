@@ -355,10 +355,10 @@ function osslperm_select(functionid)
                     var list = registry.byId("viewosslperm_switches");
                     
                     var childWidget = new dojox.mobile.ListItem({
-                        id:"viewosslperm_estateownerallowed", 
                         label:"Is estate owner allowed"});
                     list.addChild(childWidget);
                     var sw = new dojox.mobile.Switch({
+                        id:"viewosslperm_estateownerallowed", 
                         value:isestateownerallowed});
                     childWidget.addChild(sw);
                     sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEstateOwnerAllowed", val);});
@@ -378,10 +378,10 @@ function osslperm_select(functionid)
                     }
                     
                     var childWidget = new dojox.mobile.ListItem({
-                        id:"viewosslperm_estatemanagerallowed", 
                         label:"Is estate manager allowed"});
                     list.addChild(childWidget);
                     var sw = new dojox.mobile.Switch({
+                        id:"viewosslperm_estatemanagerallowed", 
                         value:isestatemanagerallowed});
                     childWidget.addChild(sw);
                     sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEstateManagerAllowed", val);});
@@ -401,10 +401,10 @@ function osslperm_select(functionid)
                     }
                     
                     var childWidget = new dojox.mobile.ListItem({
-                        id:"viewosslperm_regionownerallowed", 
                         label:"Is region owner allowed"});
                     list.addChild(childWidget);
                     var sw = new dojox.mobile.Switch({
+                        id:"viewosslperm_regionownerallowed", 
                         value:isregionownerallowed});
                     childWidget.addChild(sw);
                     sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsRegionOwnerAllowed", val);});
@@ -424,10 +424,10 @@ function osslperm_select(functionid)
                     }
                     
                     var childWidget = new dojox.mobile.ListItem({
-                        id:"viewosslperm_parcelownerallowed", 
                         label:"Is parcel owner allowed"});
                     list.addChild(childWidget);
                     var sw = new dojox.mobile.Switch({
+                        id:"viewosslperm_parcelownerallowed", 
                         value:isparcelownerallowed});
                     childWidget.addChild(sw);
                     sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsParcelOwnerAllowed", val);});
@@ -447,10 +447,10 @@ function osslperm_select(functionid)
                     }
                     
                     var childWidget = new dojox.mobile.ListItem({
-                        id:"viewosslperm_parcelgroupmemberallowed", 
                         label:"Is parcel group member allowed"});
                     list.addChild(childWidget);
                     var sw = new dojox.mobile.Switch({
+                        id:"viewosslperm_parcelgroupmemberallowed", 
                         value:isparcelgroupmemberallowed});
                     childWidget.addChild(sw);
                     sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsParcelGroupMemberAllowed", val);});
@@ -470,10 +470,10 @@ function osslperm_select(functionid)
                     }
                     
                     var childWidget = new dojox.mobile.ListItem({
-                        id:"viewosslperm_everyoneallowed", 
                         label:"Is everyone allowed"});
                     list.addChild(childWidget);
                     var sw = new dojox.mobile.Switch({
+                        id:"viewosslperm_everyoneallowed", 
                         value:iseveryoneallowed});
                     childWidget.addChild(sw);
                     sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEveryoneAllowed", val);});
