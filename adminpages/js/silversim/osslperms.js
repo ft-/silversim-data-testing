@@ -22,32 +22,7 @@
 var osslperms_returnview;
 var osslperms_regionid;
 var osslperms_selectedfunction;
-var osslperms_inited = false;
 var osslperms_block = false;
-
-function init_osslperms()
-{
-    if(osslperms_inited)
-    {
-        return;
-    }
-    osslperms_inited = true;
-    require(["dijit/registry"], function(registry)
-    {
-        registry.byId("osslperm_estateownerallowed").on("stateChanged", 
-            function(newstate) { osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEstateOwnerAllowed", newstate) });
-        registry.byId("osslperm_estatemanagerallowed").on("stateChanged", 
-            function(newstate) { osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEstateManagerAllowed", newstate) });
-        registry.byId("osslperm_regionownerallowed").on("stateChanged", 
-            function(newstate) { osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsRegionOwnerAllowed", newstate) });
-        registry.byId("osslperm_parcelownerallowed").on("stateChanged", 
-            function(newstate) { osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsParcelOwnerAllowed", newstate) });
-        registry.byId("osslperm_parcelgroupmemberallowed").on("stateChanged", 
-            function(newstate) { osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsParcelGroupMemberAllowed", newstate) });
-        registry.byId("osslperm_everyoneallowed").on("stateChanged", 
-            function(newstate) { osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEveryoneAllowed", newstate) });
-    });
-}
 
 function osslperms_change_state(name, newstate)
 {
@@ -59,9 +34,13 @@ function osslperms_change_state(name, newstate)
     {
         newstate = "true";
     }
-    else
+    else if(newstate == "off")
     {
         newstate = "false";
+    }
+    else
+    {
+        newstate = "";
     }
     require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
         function(array, request, registry, TransitionEvent)
@@ -103,6 +82,17 @@ function osslperms_change_state(name, newstate)
             }
         );
     });
+}
+
+function osslperms_reset_state(name, elementid, defaultvalue)
+{
+    osslperms_change_state(name, "");
+    osslperms_block = true;
+    require(["dijit/registry"], function(registry)
+    {
+        registry.byId(elementid).set('value', defaultvalue);
+    });
+    osslperms_block = false;
 }
 
 function go_back_to_osslperms()
@@ -147,20 +137,14 @@ function osslperms_show(returnview, title, regionid)
 
 function osslperm_select(functionid)
 {
-    init_osslperms();
     require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
         function(array, request, registry, TransitionEvent)
     {
+        var defregionid = "00000000-0000-0000-0000-000000000000";
         osslperms_selectedfunction = functionid;
         registry.byId("viewosslperm_title").set('label', "OSSL Permissions for " + functionid)
-        request("/admin/json", 
-        {
-            method:"POST",
-            data: JSON.stringify(
-            { 
-                "method":"serverparams.get",
-                "parameters":[
-                    {
+        registry.byId("viewosslperm_switches").destroyDescendants();
+        reqparams = [{
                         "parameter":"OSSL." + functionid + ".AllowedCreators",
                         "regionid":osslperms_regionid,
                     },
@@ -191,8 +175,52 @@ function osslperm_select(functionid)
                     {
                         "parameter":"OSSL." + functionid + ".IsEveryoneAllowed",
                         "regionid":osslperms_regionid,
+                    }]
+        if(osslperms_regionid != "00000000-0000-0000-0000-000000000000")
+        {
+            reqparams = reqparams.concat([
+                    {
+                        "parameter":"OSSL." + functionid + ".AllowedCreators",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".AllowedOwners",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".IsEstateOwnerAllowed",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".IsEstateManagerAllowed",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".IsRegionOwnerAllowed",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".IsParcelOwnerAllowed",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".IsParcelGroupMemberAllowed",
+                        "regionid":defregionid,
+                    },
+                    {
+                        "parameter":"OSSL." + functionid + ".IsEveryoneAllowed",
+                        "regionid":defregionid,
                     }
-                ],
+                ]);
+        }
+        
+        request("/admin/json", 
+        {
+            method:"POST",
+            data: JSON.stringify(
+            { 
+                "method":"serverparams.get",
+                "parameters":reqparams,
                 "sessionid":sessionid
             }),
             headers:
@@ -218,41 +246,251 @@ function osslperm_select(functionid)
                 }
                 else
                 {
-                    osslperms_block = true;
-                    registry.byId("osslperm_estateownerallowed").set("value", "off");
-                    registry.byId("osslperm_estatemanagerallowed").set("value", "off");
-                    registry.byId("osslperm_regionownerallowed").set("value", "off");
-                    registry.byId("osslperm_parcelownerallowed").set("value", "off");
-                    registry.byId("osslperm_parcelgroupmemberallowed").set("value", "off");
-                    registry.byId("osslperm_everyoneallowed").set("value", "off");
+                    var def_isestateownerallowed = "off";
+                    var def_isestatemanagerallowed = "off";
+                    var def_isregionownerallowed = "off";
+                    var def_isparcelownerallowed = "off";
+                    var def_isparcelgroupmemberallowed = "off";
+                    var def_iseveryoneallowed = "off";
+                    
                     array.forEach(data.values, function(pack)
                     {
                         if(pack.parameter == "OSSL." + functionid + ".IsEstateOwnerAllowed")
                         {
-                            registry.byId("osslperm_estateownerallowed").set("value", pack.value == "true" ? "on" : "false");
+                            if(pack.regionid == defregionid)
+                            {
+                                def_isestateownerallowed = pack.value == "true" ? "on" : "off";
+                            }
                         }
                         else if(pack.parameter == "OSSL." + functionid + ".IsEstateManagerAllowed")
                         {
-                            registry.byId("osslperm_estatemanagerallowed").set("value", pack.value == "true" ? "on" : "false");
+                            if(pack.regionid == defregionid)
+                            {
+                                def_isestatemanagerallowed = pack.value == "true" ? "on" : "off";
+                            }
                         }
                         else if(pack.parameter == "OSSL." + functionid + ".IsRegionOwnerAllowed")
                         {
-                            registry.byId("osslperm_regionownerallowed").set("value", pack.value == "true" ? "on" : "false");
+                            if(pack.regionid == defregionid)
+                            {
+                                def_isregionownerallowed = pack.value == "true" ? "on" : "off";
+                            }
                         }
                         else if(pack.parameter == "OSSL." + functionid + ".IsParcelOwnerAllowed")
                         {
-                            registry.byId("osslperm_parcelownerallowed").set("value", pack.value == "true" ? "on" : "false");
+                            if(pack.regionid == defregionid)
+                            {
+                                def_isparcelownerallowed = pack.value == "true" ? "on" : "off";
+                            }
                         }
                         else if(pack.parameter == "OSSL." + functionid + ".IsParcelGroupMemberAllowed")
                         {
-                            registry.byId("osslperm_parcelgroupmemberallowed").set("value", pack.value == "true" ? "on" : "false");
+                            if(pack.regionid == defregionid)
+                            {
+                                def_isparcelgroupmemberallowed = pack.value == "true" ? "on" : "off";
+                            }
                         }
                         else if(pack.parameter == "OSSL." + functionid + ".IsEveryoneAllowed")
                         {
-                            registry.byId("osslperm_everyoneallowed").set("value", pack.value == "true" ? "on" : "false");
+                            if(pack.regionid == defregionid)
+                            {
+                                def_iseveryoneallowed = pack.value == "true" ? "on" : "off";
+                            }
                         }
                     });
-                    osslperms_block = false;
+                    
+                    var isestateownerallowed = def_isestateownerallowed;
+                    var isestatemanagerallowed = def_isestatemanagerallowed;
+                    var isregionownerallowed = def_isregionownerallowed;
+                    var isparcelownerallowed = def_isparcelownerallowed;
+                    var isparcelgroupmemberallowed = def_isparcelgroupmemberallowed;
+                    var iseveryoneallowed = def_iseveryoneallowed;
+                    
+                    array.forEach(data.values, function(pack)
+                    {
+                        if(pack.parameter == "OSSL." + functionid + ".IsEstateOwnerAllowed")
+                        {
+                            if(pack.regionid == osslperms_regionid)
+                            {
+                                isestateownerallowed = pack.value == "true" ? "on" : "off";
+                            }
+                        }
+                        else if(pack.parameter == "OSSL." + functionid + ".IsEstateManagerAllowed")
+                        {
+                            if(pack.regionid == osslperms_regionid)
+                            {
+                                isestatemanagerallowed = pack.value == "true" ? "on" : "off";
+                            }
+                        }
+                        else if(pack.parameter == "OSSL." + functionid + ".IsRegionOwnerAllowed")
+                        {
+                            if(pack.regionid == osslperms_regionid)
+                            {
+                                iseregionownerallowed = pack.value == "true" ? "on" : "off";
+                            }
+                        }
+                        else if(pack.parameter == "OSSL." + functionid + ".IsParcelOwnerAllowed")
+                        {
+                            if(pack.regionid == osslperms_regionid)
+                            {
+                                isestateownerallowed = pack.value == "true" ? "on" : "off";
+                            }
+                        }
+                        else if(pack.parameter == "OSSL." + functionid + ".IsParcelGroupMemberAllowed")
+                        {
+                            if(pack.regionid == osslperms_regionid)
+                            {
+                                isparcelgroupmemberallowed = pack.value == "true" ? "on" : "off";
+                            }
+                        }
+                        else if(pack.parameter == "OSSL." + functionid + ".IsEveryoneAllowed")
+                        {
+                            if(pack.regionid == osslperms_regionid)
+                            {
+                                iseveryoneallowed = pack.value == "true" ? "on" : "off";
+                            }
+                        }
+                    });
+                                        
+                    var list = registry.byId("viewosslperm_switches");
+                    
+                    var childWidget = new dojox.mobile.ListItem({
+                        id:"viewosslperm_estateownerallowed", 
+                        label:"Is estate owner allowed"});
+                    list.addChild(childWidget);
+                    var sw = new dojox.mobile.Switch({
+                        value:isestateownerallowed});
+                    childWidget.addChild(sw);
+                    sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEstateOwnerAllowed", val);});
+                    
+                    if(osslperms_regionid != defregionid)
+                    {
+                        var childWidget = new dojox.mobile.ListItem({
+                            id:"viewosslperm_estateownerallowed_setdef", 
+                            label:"Use default",
+                            rightText:def_isestateownerallowed,
+                            clickable:true});
+                        list.addChild(childWidget);
+                        childWidget.on("click", function() { osslperms_reset_state(
+                            "OSSL." + osslperms_selectedfunction + ".IsEstateOwnerAllowed", 
+                            "viewosslperm_estateownerallowed", 
+                            def_isestateownerallowed); });
+                    }
+                    
+                    var childWidget = new dojox.mobile.ListItem({
+                        id:"viewosslperm_estatemanagerallowed", 
+                        label:"Is estate manager allowed"});
+                    list.addChild(childWidget);
+                    var sw = new dojox.mobile.Switch({
+                        value:isestatemanagerallowed});
+                    childWidget.addChild(sw);
+                    sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEstateManagerAllowed", val);});
+
+                    if(osslperms_regionid != defregionid)
+                    {
+                        var childWidget = new dojox.mobile.ListItem({
+                            id:"viewosslperm_estatemanagerallowed_setdef", 
+                            label:"Use default",
+                            rightText:def_isestatemanagerallowed,
+                            clickable:true});
+                        list.addChild(childWidget);
+                        childWidget.on("click", function() { osslperms_reset_state(
+                            "OSSL." + osslperms_selectedfunction + ".IsEstateManagerAllowed", 
+                            "viewosslperm_estatemanagerallowed", 
+                            def_isestatemanagerallowed); });
+                    }
+                    
+                    var childWidget = new dojox.mobile.ListItem({
+                        id:"viewosslperm_regionownerallowed", 
+                        label:"Is region owner allowed"});
+                    list.addChild(childWidget);
+                    var sw = new dojox.mobile.Switch({
+                        value:isregionownerallowed});
+                    childWidget.addChild(sw);
+                    sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsRegionOwnerAllowed", val);});
+                    
+                    if(osslperms_regionid != defregionid)
+                    {
+                        var childWidget = new dojox.mobile.ListItem({
+                            id:"viewosslperm_regionownerallowed_setdef", 
+                            label:"Use default",
+                            rightText:def_isregionownerallowed,
+                            clickable:true});
+                        list.addChild(childWidget);
+                        childWidget.on("click", function() { osslperms_reset_state(
+                            "OSSL." + osslperms_selectedfunction + ".IsRegionOwnerAllowed", 
+                            "viewosslperm_regionownerallowed", 
+                            def_isregionownerallowed); });
+                    }
+                    
+                    var childWidget = new dojox.mobile.ListItem({
+                        id:"viewosslperm_parcelownerallowed", 
+                        label:"Is parcel owner allowed"});
+                    list.addChild(childWidget);
+                    var sw = new dojox.mobile.Switch({
+                        value:isparcelownerallowed});
+                    childWidget.addChild(sw);
+                    sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsParcelOwnerAllowed", val);});
+                    
+                    if(osslperms_regionid != defregionid)
+                    {
+                        var childWidget = new dojox.mobile.ListItem({
+                            id:"viewosslperm_parcelownerallowed_setdef", 
+                            label:"Use default",
+                            rightText:def_isparcelownerallowed,
+                            clickable:true});
+                        list.addChild(childWidget);
+                        childWidget.on("click", function() { osslperms_reset_state(
+                            "OSSL." + osslperms_selectedfunction + ".IsParcelOwnerAllowed", 
+                            "viewosslperm_parcelownerallowed", 
+                            def_isparcelownerallowed); });
+                    }
+                    
+                    var childWidget = new dojox.mobile.ListItem({
+                        id:"viewosslperm_parcelgroupmemberallowed", 
+                        label:"Is parcel group member allowed"});
+                    list.addChild(childWidget);
+                    var sw = new dojox.mobile.Switch({
+                        value:isparcelgroupmemberallowed});
+                    childWidget.addChild(sw);
+                    sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsParcelGroupMemberAllowed", val);});
+                    
+                    if(osslperms_regionid != defregionid)
+                    {
+                        var childWidget = new dojox.mobile.ListItem({
+                            id:"viewosslperm_parcelgroupmemberallowed_setdef", 
+                            label:"Use default",
+                            rightText:def_isparcelgroupmemberallowed,
+                            clickable:true});
+                        list.addChild(childWidget);
+                        childWidget.on("click", function() { osslperms_reset_state(
+                            "OSSL." + osslperms_selectedfunction + ".IsParcelGroupMemberAllowed", 
+                            "viewosslperm_parcelgroupmemberallowed", 
+                            def_isparcelgroupmemberallowed); });
+                    }
+                    
+                    var childWidget = new dojox.mobile.ListItem({
+                        id:"viewosslperm_everyoneallowed", 
+                        label:"Is everyone allowed"});
+                    list.addChild(childWidget);
+                    var sw = new dojox.mobile.Switch({
+                        value:iseveryoneallowed});
+                    childWidget.addChild(sw);
+                    sw.on("stateChanged", function(val) {osslperms_change_state("OSSL." + osslperms_selectedfunction + ".IsEveryoneAllowed", val);});
+                    
+                    if(osslperms_regionid != defregionid)
+                    {
+                        var childWidget = new dojox.mobile.ListItem({
+                            id:"viewosslperm_everyoneallowed_setdef", 
+                            label:"Use default",
+                            rightText:def_iseveryoneallowed,
+                            clickable:true});
+                        list.addChild(childWidget);
+                        childWidget.on("click", function() { osslperms_reset_state(
+                            "OSSL." + osslperms_selectedfunction + ".IsEveryoneAllowed", 
+                            "viewosslperm_everyoneallowed", 
+                            def_iseveryoneallowed); });
+                    }
                     
                     new TransitionEvent(viewosslperms, {
                                     moveTo: "viewosslperm",
