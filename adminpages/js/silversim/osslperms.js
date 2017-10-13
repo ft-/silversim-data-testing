@@ -632,6 +632,10 @@ var allowedcreators_permlist = [];
 
 function ossl_update_allowedcreators(result, usedregioniddata)
 {
+    if(result == "none")
+    {
+        result = "";
+    }
     require(["dojo/_base/array", "dijit/registry"],
         function(array, registry)
     {
@@ -680,6 +684,10 @@ function ossl_update_allowedcreators(result, usedregioniddata)
 
 function ossl_update_allowedowners(result, usedregioniddata)
 {
+    if(result == "none")
+    {
+        result = "";
+    }
     require(["dojo/_base/array", "dijit/registry"],
         function(array, registry)
     {
@@ -908,6 +916,10 @@ function osslperms_remove_from_creators_list(uui)
     allowedcreators_permlist = allowedcreators_permlist.filter(function(f) { return f != uui; });
     parameter = "OSSL." + osslperms_selectedfunction + ".AllowedCreators";
     var reqdata = allowedcreators_permlist.join(",");
+    if(osslperms_regionid != "00000000-0000-0000-0000-000000000000" && reqdata == "")
+    {
+        reqdata = "none";
+    }
     osslperms_set_list(parameter, reqdata, ossl_update_allowedcreators);
 }
 
@@ -916,5 +928,9 @@ function osslperms_remove_from_owners_list(uui)
     allowedowners_permlist = allowedowners_permlist.filter(function(f) { return f != uui; });
     parameter = "OSSL." + osslperms_selectedfunction + ".AllowedOwners";
     var reqdata = allowedowners_permlist.join(",");
+    if(osslperms_regionid != "00000000-0000-0000-0000-000000000000" && reqdata == "")
+    {
+        reqdata = "none";
+    }
     osslperms_set_list(parameter, reqdata, ossl_update_allowedowners);
 }
