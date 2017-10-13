@@ -666,6 +666,7 @@ function ossl_update_allowedcreators(result, usedregioniddata)
                 arrowClass:"mblDomButtonRedCircleMinus",
                 clickable:true});
             list.addChild(childWidget);
+            childWidget.on("click", function() { osslperms_remove_from_creators_list(uui); });
         });
         
         var childWidget = new dojox.mobile.ListItem({
@@ -673,6 +674,7 @@ function ossl_update_allowedcreators(result, usedregioniddata)
             arrowClass:"mblDomButtonGreenCirclePlus",
             clickable:true});
         list.addChild(childWidget);
+        childWidget.on("click", osslperms_add_creator);
     });
 }
 
@@ -712,6 +714,7 @@ function ossl_update_allowedowners(result, usedregioniddata)
                 arrowClass:"mblDomButtonRedCircleMinus",
                 clickable:true});
             list.addChild(childWidget);
+            childWidget.on("click", function() { osslperms_remove_from_owners_list(uui); });
         });
         
         var childWidget = new dojox.mobile.ListItem({
@@ -719,6 +722,7 @@ function ossl_update_allowedowners(result, usedregioniddata)
             arrowClass:"mblDomButtonGreenCirclePlus",
             clickable:true});
         list.addChild(childWidget);
+        childWidget.on("click", osslperms_add_owner);
     });
 }
 
@@ -821,4 +825,96 @@ function osslperms_read_list(parameter, updatefunc)
             }
         );
     });
+}
+
+function osslperms_set_list(parameter, setvalue, updatefunc)
+{
+    require(["dojo/_base/array", "dojo/request", "dijit/registry", "dojox/mobile/TransitionEvent"], 
+        function(array, request, registry, TransitionEvent)
+    {
+        request("/admin/json", 
+        {
+            method:"POST",
+            data: JSON.stringify(
+            { 
+                "method":"serverparam.set",
+                "parameter":parameter,
+                "value":setvalue,
+                "regionid":osslperms_regionid,
+                "sessionid":sessionid
+            }),
+            headers:
+            {
+                "Content-Type":"application/json"
+            },
+            handleAs:"json"
+        }).then(
+            function(data) 
+            {
+                if(!data.success)
+                {
+                    if(data.reason == 1)
+                    {
+                        new TransitionEvent(viewosslperms, {
+                            moveTo: "viewlogin",
+                            transition: "slide",
+                            transitionDir: -1
+                        }).dispatch();
+                        return;
+                    }
+                    showErrorDialog(data.reason);
+                }
+                else
+                {
+                    osslperms_read_list(parameter, updatefunc);
+                }
+            },
+            function(err) {
+            }
+        );
+    });
+}
+
+function osslperms_add_creator_to_param(details)
+{
+    allowedcreators_permlist.push(details.uui);
+    parameter = "OSSL." + osslperms_selectedfunction + ".AllowedCreators";
+    var reqdata = allowedcreators_permlist.join(",");
+    osslperms_set_list(parameter, reqdata, ossl_update_allowedcreators);
+}
+
+function osslperms_add_creator()
+{
+    handle_selectuser_okay = osslperms_add_creator_to_param;
+    selectuser_show(viewosslperm, null, "Add allowed creator");
+}
+
+function osslperms_add_owner_to_param(details)
+{
+    allowedowners_permlist.push(details.uui);
+    parameter = "OSSL." + osslperms_selectedfunction + ".AllowedOwners";
+    var reqdata = allowedowners_permlist.join(",");
+    osslperms_set_list(parameter, reqdata, ossl_update_allowedowners);
+}
+
+function osslperms_add_owner()
+{
+    handle_selectuser_okay = osslperms_add_owner_to_param;
+    selectuser_show(viewosslperm, null, "Add allowed owner");
+}
+
+function osslperms_remove_from_creators_list(uui)
+{
+    allowedcreators_permlist = allowedcreators_permlist.filter(function(f) { return f != uui; });
+    parameter = "OSSL." + osslperms_selectedfunction + ".AllowedCreators";
+    var reqdata = allowedcreators_permlist.join(",");
+    osslperms_set_list(parameter, reqdata, ossl_update_allowedcreators);
+}
+
+function osslperms_remove_from_owners_list(uui)
+{
+    allowedowners_permlist = allowedowners_permlist.filter(function(f) { return f != uui; });
+    parameter = "OSSL." + osslperms_selectedfunction + ".AllowedOwners";
+    var reqdata = allowedowners_permlist.join(",");
+    osslperms_set_list(parameter, reqdata, ossl_update_allowedowners);
 }
