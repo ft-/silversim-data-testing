@@ -11,6 +11,8 @@
         <echo message="&lt;?xml version=&quot;1.0&quot;?&gt;
 &lt;package&gt;
   &lt;name&gt;SilverSim.WebAdmin&lt;/name&gt;
+  &lt;version&gt;0.0.0.0&gt;/version&lt;
+  &lt;license&gt;Affero GPLv3 License+Link Exception&gt;/license&lt;
   &lt;dependencies&gt;
     &lt;dependency name=&quot;SilverSim.WebIF&quot;/&gt;
   &lt;/dependencies&gt;
