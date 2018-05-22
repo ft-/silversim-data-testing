@@ -41,7 +41,7 @@ function send_command()
 		}).then(
 			function(response) 
 			{
-				registry.byId("command_output").set('innerHTML', "<pre>"+response+"</pre>");
+				registry.byId("command_output").set('innerHTML', "<pre>"+response.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')+"</pre>");
 			},
 			function(err) {
 			}
