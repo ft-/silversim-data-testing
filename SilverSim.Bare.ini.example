@@ -1,5 +1,5 @@
-[Startup]
-	Mode=RobustHypergrid
+[Inter-Grid]
+	Hypergrid=yes
 
 [DatabaseService]
 	Type=MySQL

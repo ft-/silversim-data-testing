@@ -1,5 +1,5 @@
-[Startup]
-	Mode=RobustHypergrid
+[Inter-Grid]
+	Hypergrid=yes
 
 [DatabaseService]
 	Type=MySQL
@@ -18,8 +18,8 @@
 	Port = 9001
 
 [OptionalModules]
-    LSL_LoadIarSupport=yes
-    LSL_LoadOarSupport=yes
-    LSL_NpcLoadIarSupport=yes
-    NPCSupport=yes
-    Experiences=yes
+	LSL_LoadIarSupport=yes
+	LSL_LoadOarSupport=yes
+	LSL_NpcLoadIarSupport=yes
+	NPCSupport=yes
+	Experiences=yes
